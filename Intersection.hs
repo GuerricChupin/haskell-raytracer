@@ -2,6 +2,8 @@ module Intersection where
 
 import AuxiliaryFunctions
 import Shapes
+import Renderable
+import GeometricTypes
 
 sphereIntersect :: Ray -> Sphere -> [Point]
 sphereIntersect Ray {origin = (a,b,c), dir = (x,y,z)}
@@ -15,3 +17,7 @@ sphereIntersect Ray {origin = (a,b,c), dir = (x,y,z)}
     cond = p^2 - (sqNorm oc) + r^2
     rtCond = sqrt cond
     oc = (a,b,c) .- (d,e,f)
+
+instance Renderable Sphere where
+   hit r s = not $ null $ sphereIntersect r s
+              

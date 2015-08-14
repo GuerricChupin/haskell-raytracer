@@ -1,6 +1,13 @@
-module AuxiliaryFunctions where
+module AuxiliaryFunctions ( (.+)
+                          , (.-)
+                          , (.*)
+                          , dotProd
+                          , crossProd
+                          , sqNorm
+                          , norm
+                          ) where
 
-import Shapes
+import GeometricTypes
 
 (.+) :: Vector -> Vector -> Vector
 (a,b,c) .+ (d,e,f) = (a+d,b+e,c+f)
