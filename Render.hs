@@ -9,7 +9,7 @@ import qualified Data.Matrix as M
 import GeometricTypes
 import AuxiliaryFunctions
 import Renderable
-import Data.List (maximumBy)
+import Data.List (maximumBy,minimumBy)
 import Data.Function (on)
 import LightSource
 
@@ -30,11 +30,17 @@ render (w, h) (a, b) d scene = Image $ M.fromList w h $
 -- Only the closest intersection to the screen is considered.
 pointColor :: Scene -> Double -> Ray -> Color
 pointColor scene d r | null inters = black
-                     | otherwise   = lighten (max minimalExposure (lightDir `dotProd` n)) (colorAt closestPt closestObj)
+                     | otherwise   = lighten (max minimalExposure realExposure) (colorAt closestPt closestObj)
    where inters = concatMap (\o -> map ((,) o) (intersections r o)) (objs scene)
-         (closestObj, closestPt) = maximumBy
+         (closestObj, closestPt) = minimumBy
             (compare `on` (distance cameraPos . snd)) inters
          n = normalise $ dir $ normal closestObj closestPt
          lightDir = normalise $ direction (source scene)
          cameraPos = (0, 0, d)
+         ref = Ray {origin = closestPt, dir = n}
+         shadow =
+           not $ null $ concatMap (\o -> intersections ref o) (objs scene)
+         realExposure = if shadow
+                        then minimalExposure
+                        else lightDir `dotProd` n
 

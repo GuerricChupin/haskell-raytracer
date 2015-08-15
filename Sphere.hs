@@ -20,7 +20,7 @@ sphereIntersect Ray {origin = (a,b,c), dir = (x,y,z)}
                 Sphere {center = (d,e,f), radius = r}
   | cond > (max 0 p) = [(a,b,c) .+ ((-p + cond).*normdir),
                         (a,b,c) .+ ((-p - cond).*normdir)]
-  | cond == 0 && p <= 0 = [(a,b,c) .+ ((-p).*normdir)]
+  | cond == 0 && p < 0 = [(a,b,c) .+ ((-p).*normdir)]
   | otherwise = []
   where
     normdir = normalise (x,y,z)
