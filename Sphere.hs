@@ -5,6 +5,7 @@ module Sphere ( Sphere (Sphere)
               , sphereIntersect
               ) where 
 
+import Data.List (nub)
 import Renderable
 import GeometricTypes
 import AuxiliaryFunctions
@@ -18,8 +19,9 @@ data Sphere = Sphere { center :: Point
 sphereIntersect :: Ray -> Sphere -> [Point]
 sphereIntersect Ray {origin = (a,b,c), dir = (x,y,z)}
                 Sphere {center = (d,e,f), radius = r}
-  | cond > (max 0 p) = [(a,b,c) .+ ((-p + cond).*normdir),
-                        (a,b,c) .+ ((-p - cond).*normdir)]
+  | cond > max 0 p && cond < -p =
+      [(a,b,c) .+ ((-p + cond).*normdir),
+       (a,b,c) .+ ((-p - cond).*normdir)]
   | cond == 0 && p < 0 = [(a,b,c) .+ ((-p).*normdir)]
   | otherwise = []
   where

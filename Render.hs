@@ -37,7 +37,7 @@ pointColor scene d r | null inters = black
          n = normalise $ dir $ normal closestObj closestPt
          lightDir = normalise $ direction (source scene)
          cameraPos = (0, 0, d)
-         ref = Ray {origin = closestPt, dir = n}
+         ref = Ray {origin = closestPt, dir = (direction $ source scene)}
          shadow =
            not $ null $ concatMap (\o -> intersections ref o) (objs scene)
          realExposure = if shadow
