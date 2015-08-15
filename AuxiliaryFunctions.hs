@@ -5,6 +5,7 @@ module AuxiliaryFunctions ( (.+)
                           , crossProd
                           , sqNorm
                           , norm
+                          , normalise
                           ) where
 
 import GeometricTypes
@@ -32,3 +33,6 @@ sqNorm x = dotProd x x
 
 norm :: Vector -> Double
 norm = sqrt . sqNorm
+
+normalise :: Vector -> Vector
+normalise x = (1/norm x) .* x
