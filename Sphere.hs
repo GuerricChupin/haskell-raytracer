@@ -1,9 +1,16 @@
-module Intersection where
+module Sphere ( Sphere (Sphere)
+              , center
+              , radius
+              , sphereIntersect
+              ) where 
 
-import AuxiliaryFunctions
-import Shapes
 import Renderable
 import GeometricTypes
+import AuxiliaryFunctions
+
+data Sphere = Sphere { center :: Point
+                     , radius :: Double
+                     }
 
 sphereIntersect :: Ray -> Sphere -> [Point]
 sphereIntersect Ray {origin = (a,b,c), dir = (x,y,z)}
@@ -21,3 +28,7 @@ sphereIntersect Ray {origin = (a,b,c), dir = (x,y,z)}
 
 instance Renderable Sphere where
    hit r s = not $ null $ sphereIntersect r s
+   intersections r s = sphereIntersect r s
+   normal s p = Ray { origin = p
+                    , dir    = p .- center s}
+

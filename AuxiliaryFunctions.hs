@@ -6,6 +6,7 @@ module AuxiliaryFunctions ( (.+)
                           , sqNorm
                           , norm
                           , normalise
+                          , distance
                           ) where
 
 import GeometricTypes
@@ -36,3 +37,6 @@ norm = sqrt . sqNorm
 
 normalise :: Vector -> Vector
 normalise x = (1/norm x) .* x
+
+distance :: Point -> Point -> Double
+distance a b = norm (b .- a)
