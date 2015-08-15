@@ -4,7 +4,7 @@ module Render ( render
 import Scene
 import Sphere
 import Image
-import Pixel
+import Color
 import qualified Data.Matrix as M
 import GeometricTypes
 import AuxiliaryFunctions
@@ -28,9 +28,9 @@ render (w, h) (a, b) d scene = Image $ M.fromList w h $
    ordinates = [b * (-0.5 + y / fromIntegral h) | y <- map fromIntegral [(h - 1), (h - 2)..0]]
 
 -- Only the closest intersection to the screen is considered.
-pointColor :: Scene -> Double -> Ray -> Pixel
+pointColor :: Scene -> Double -> Ray -> Color
 pointColor scene d r | null inters = black
-                     | otherwise   = lighten (max minimalExposure (lightDir `dotProd` n)) white
+                     | otherwise   = lighten (max minimalExposure (lightDir `dotProd` n)) (colorAt closestPt closestObj)
    where inters = concatMap (\o -> map ((,) o) (intersections r o)) (objs scene)
          (closestObj, closestPt) = maximumBy
             (compare `on` (distance cameraPos . snd)) inters

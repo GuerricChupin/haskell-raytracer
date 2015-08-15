@@ -1,15 +1,18 @@
 module Sphere ( Sphere (Sphere)
               , center
               , radius
+              , color
               , sphereIntersect
               ) where 
 
 import Renderable
 import GeometricTypes
 import AuxiliaryFunctions
+import Color
 
 data Sphere = Sphere { center :: Point
                      , radius :: Double
+                     , color  :: Color
                      }
 
 sphereIntersect :: Ray -> Sphere -> [Point]
@@ -31,4 +34,5 @@ instance Renderable Sphere where
    intersections r s = sphereIntersect r s
    normal s p = Ray { origin = p
                     , dir    = p .- center s}
+   colorAt p s = color s
 

@@ -4,9 +4,9 @@ module Image ( Image (Image)
 
 import qualified Data.Matrix as M
 import Data.List (intersperse)
-import Pixel
+import Color
 
-newtype Image = Image { toMatrix :: M.Matrix Pixel }
+newtype Image = Image { toMatrix :: M.Matrix Color }
 
 instance Show Image where
    show img = "P3\n"
