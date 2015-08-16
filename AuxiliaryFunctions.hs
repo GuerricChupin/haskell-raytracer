@@ -49,4 +49,3 @@ distance a b = norm (b .- a)
 
 sym :: Vector -> Vector -> Vector
 sym u n = (2 * u `dotProd` n) .* normalise n .- u
-
