@@ -13,8 +13,8 @@ import Data.List (maximumBy,minimumBy)
 import Data.Function (on)
 import LightSource
 
-minimalExposure = 0.1
-maxReflection = 3
+minExposure = 0.1
+maxReflection = 6
 
 -- camera is fixed at (0, 0, d) and the screen is orthogonal to the camera and
 -- is a rectange centered in origin of size (a, b).
@@ -33,21 +33,25 @@ render (w, h) (a, b) d scene = Image $ M.fromList h w $
 -- Only the closest intersection to the screen is considered.
 pointColor :: Scene -> Double -> Int -> Ray -> Color
 pointColor scene d acc r | null inters || acc >= maxReflection = black
-                         | otherwise   = (darken ((1-reflectAt closestPt closestObj) * max minimalExposure realExposure) (colorAt closestPt closestObj)) .+ (darken (reflectAt closestPt closestObj) (reflColor scene closestPt closestObj))
-   where inters = concatMap (\o -> map ((,) o) (intersections r o)) (objs scene)
-         (closestObj, closestPt) = minimumBy
-            (compare `on` (distance cameraPos . snd)) inters
-         n = normalise $ dir $ normal closestObj closestPt
-         lightDir = normalise $ direction (source scene)
-         cameraPos = (0, 0, d)
-         lightRay = Ray {origin = closestPt, dir = lightDir}
-         shadow =
-           (not $ null $ concatMap (\o -> intersections lightRay o) (objs scene))
-           || (lightDir `dotProd` n) < 0
-         realExposure =
-           if shadow
-           then minimalExposure
-           else lightDir `dotProd` n 
-         reflRay = Ray {origin = closestPt, dir = neg (dir r `sym` n)}
-         reflColor :: Scene -> Point -> SceneObject -> Color
-         reflColor scene p obj = pointColor scene d (acc + 1) reflRay
+                         | otherwise   =
+   darken ((1-reflFactor) * max minExposure realExposure) (colorAt p obj) .+
+   darken reflFactor reflColor
+   where
+   inters = concatMap (\o -> map ((,) o) (intersections r o)) (objs scene)
+   (obj, p) = minimumBy
+      (compare `on` (distance cameraPos . snd)) inters
+   n = normalise $ dir $ normal obj p
+   lightDir = normalise $ direction (source scene)
+   cameraPos = (0, 0, d)
+   lightRay = Ray {origin = p, dir = lightDir}
+   shadow =
+     (not $ null $ concatMap (\o -> intersections lightRay o) (objs scene))
+     || (lightDir `dotProd` n) < 0
+   realExposure =
+     if shadow
+     then minExposure
+     else lightDir `dotProd` n 
+   reflFactor = reflectAt p obj
+   reflRay = Ray {origin = p, dir = neg (dir r `sym` n)}
+   reflColor = pointColor scene d (acc + 1) reflRay
+
