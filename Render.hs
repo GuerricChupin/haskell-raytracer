@@ -19,10 +19,10 @@ maxReflection = 5
 -- camera is fixed at (0, 0, d) and the screen is orthogonal to the camera and
 -- is a rectange centered in origin of size (a, b).
 render :: ImageDefinition -> (Double, Double) -> Double -> Scene -> Image
-render (w, h) (a, b) d scene = Image $ M.fromList w h $
-   map (\r -> pointColor scene d r 0)
+render (w, h) (a, b) d scene = Image $ M.fromList h w $
+   map (pointColor scene d)
       [Ray {origin = cameraPos,
-            dir    = (x, y, 0) .- cameraPos} | y <- ordinates, x <- abscissas]
+         dir    = (x, y, 0) .- cameraPos} | y <- ordinates, x <- abscissas]
    where
    cameraPos = (0, 0, d)
    abscissas =
