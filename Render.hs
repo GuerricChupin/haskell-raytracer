@@ -20,7 +20,7 @@ maxReflection = 5
 -- is a rectange centered in origin of size (a, b).
 render :: ImageDefinition -> (Double, Double) -> Double -> Scene -> Image
 render (w, h) (a, b) d scene = Image $ M.fromList h w $
-   map (pointColor scene d)
+   map (pointColor scene d 0)
       [Ray {origin = cameraPos,
          dir    = (x, y, 0) .- cameraPos} | y <- ordinates, x <- abscissas]
    where
@@ -31,8 +31,8 @@ render (w, h) (a, b) d scene = Image $ M.fromList h w $
      [b * (-0.5 + y / fromIntegral h) | y <- map fromIntegral [(h - 1), (h - 2)..0]]
 
 -- Only the closest intersection to the screen is considered.
-pointColor :: Scene -> Double -> Ray -> Int -> Color
-pointColor scene d r acc | null inters || acc >= maxReflection = black
+pointColor :: Scene -> Double -> Int -> Ray -> Color
+pointColor scene d acc r | null inters || acc >= maxReflection = black
                          | otherwise   = (darken (max minimalExposure realExposure) (colorAt closestPt closestObj)) .+ (reflColor scene closestPt closestObj)
    where inters = concatMap (\o -> map ((,) o) (intersections r o)) (objs scene)
          (closestObj, closestPt) = minimumBy
@@ -48,8 +48,6 @@ pointColor scene d r acc | null inters || acc >= maxReflection = black
            if shadow
            then minimalExposure
            else lightDir `dotProd` n 
-         reflRay = Ray {origin = closestPt, dir = n}
+         reflRay = Ray {origin = closestPt, dir = neg (dir r `sym` n)}
          reflColor :: Scene -> Point -> SceneObject -> Color
-         reflColor scene p obj = if shadow
-                                 then black
-                                 else pointColor scene d reflRay (acc + 1)  
+         reflColor scene p obj = pointColor scene d (acc + 1) reflRay
