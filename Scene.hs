@@ -16,7 +16,7 @@ data SceneObject = forall a. Renderable a => MkSceneObject a
 instance Renderable SceneObject where
    hit r (MkSceneObject a) = hit r a
    contains (MkSceneObject a) p = contains a p
-   intersections r (MkSceneObject a) = intersections r a
+   firstIntersection r (MkSceneObject a) = firstIntersection r a
    normal (MkSceneObject a) p = normal a p
    colorAt p (MkSceneObject a) = colorAt p a
    reflectAt p (MkSceneObject a) = reflectAt p a

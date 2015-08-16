@@ -1,7 +1,7 @@
 module Renderable ( Renderable
                   , hit
                   , contains
-                  , intersections
+                  , firstIntersection
                   , normal
                   , colorAt
                   , reflectAt
@@ -13,7 +13,7 @@ import Color
 class Renderable a where
    hit :: Ray -> a -> Bool
    contains :: a -> Point -> Bool
-   intersections :: Ray -> a -> [Point]
+   firstIntersection :: Ray -> a -> Maybe Point
    -- undefined result if the point is not on the object
    normal :: a -> Point -> Ray
    colorAt :: Point -> a -> Color
