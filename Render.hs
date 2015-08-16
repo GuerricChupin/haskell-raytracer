@@ -13,8 +13,8 @@ import Data.List (maximumBy,minimumBy)
 import Data.Function (on)
 import LightSource
 
-minimalExposure = 0.05
-maxReflection = 5
+minimalExposure = 0.1
+maxReflection = 3
 
 -- camera is fixed at (0, 0, d) and the screen is orthogonal to the camera and
 -- is a rectange centered in origin of size (a, b).
@@ -33,7 +33,7 @@ render (w, h) (a, b) d scene = Image $ M.fromList h w $
 -- Only the closest intersection to the screen is considered.
 pointColor :: Scene -> Double -> Int -> Ray -> Color
 pointColor scene d acc r | null inters || acc >= maxReflection = black
-                         | otherwise   = (darken (max minimalExposure realExposure) (colorAt closestPt closestObj)) .+ (reflColor scene closestPt closestObj)
+                         | otherwise   = (darken ((1-reflectAt closestPt closestObj) * max minimalExposure realExposure) (colorAt closestPt closestObj)) .+ (darken (reflectAt closestPt closestObj) (reflColor scene closestPt closestObj))
    where inters = concatMap (\o -> map ((,) o) (intersections r o)) (objs scene)
          (closestObj, closestPt) = minimumBy
             (compare `on` (distance cameraPos . snd)) inters
