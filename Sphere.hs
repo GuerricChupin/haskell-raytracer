@@ -16,7 +16,7 @@ import Data.Function (on)
 import Debug.Trace
 
 epsilon :: Double
-epsilon = 1.0e-6
+epsilon = 1.0e-12
 
 data Sphere = Sphere { center  :: Point
                      , radius  :: Double
