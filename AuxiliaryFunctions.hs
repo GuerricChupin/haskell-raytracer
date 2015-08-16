@@ -10,11 +10,12 @@ module AuxiliaryFunctions ( (.+)
                           ) where
 
 import GeometricTypes
+import Color
 
-(.+) :: Vector -> Vector -> Vector
+(.+) :: (Num a) => (a,a,a) -> (a,a,a) -> (a,a,a)
 (a,b,c) .+ (d,e,f) = (a+d,b+e,c+f)
 
-(.-) :: Vector -> Vector -> Vector
+(.-) :: (Num a) => (a,a,a) -> (a,a,a) -> (a,a,a)
 (a,b,c) .- (d,e,f) = (a-d,b-e,c-f)
 
 (.*) :: Double -> Vector -> Vector

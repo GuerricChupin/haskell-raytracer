@@ -18,7 +18,8 @@ instance Renderable SceneObject where
    intersections r (MkSceneObject a) = intersections r a
    normal (MkSceneObject a) p = normal a p
    colorAt p (MkSceneObject a) = colorAt p a
-
+   reflectAt p (MkSceneObject a) = reflectAt p a
+   
 data Scene = Scene { objs :: [SceneObject]
                    , source :: LightSource
                    }

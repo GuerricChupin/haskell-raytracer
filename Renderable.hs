@@ -3,6 +3,7 @@ module Renderable ( Renderable
                   , intersections
                   , normal
                   , colorAt
+                  , reflectAt
                   ) where
 
 import GeometricTypes (Ray, Point)
@@ -14,4 +15,4 @@ class Renderable a where
    -- undefined result if the point is not on the object
    normal :: a -> Point -> Ray
    colorAt :: Point -> a -> Color
-
+   reflectAt :: Point -> a -> Double
