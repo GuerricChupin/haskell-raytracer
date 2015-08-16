@@ -33,6 +33,7 @@ sphereIntersect Ray {origin = (a,b,c), dir = (x,y,z)}
 
 instance Renderable Sphere where
    hit r s = not $ null $ sphereIntersect r s
+   contains s p = distance p (center s) < radius s
    intersections r s = sphereIntersect r s
    normal s p = Ray { origin = p
                     , dir    = p .- center s}
