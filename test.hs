@@ -8,9 +8,9 @@ scene = Scene {
    , source = LightSource { direction = (-1, 1, 0) }
    }
 
-spheres = [ Sphere (0, 0, -10)  6 (200, 0, 0)
-          , Sphere (4, 4, -1)   1 (0, 255, 0)
-          , Sphere (-9, 9, -10) 5 (0, 0, 255)
+spheres = [ Sphere (0, 0, -10)  6 (200, 0, 0) 0.3
+          , Sphere (4, 4, -1)   1 (0, 255, 0) 0.6
+          , Sphere (-9, 9, -10) 5 (0, 0, 255) 0.7
           ]
 
 main = putStr . show $ render (1000, 1000) (20, 20) 20 scene
