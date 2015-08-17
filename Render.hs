@@ -16,7 +16,7 @@ import Data.Maybe (isNothing, fromJust, isJust)
 import Debug.Trace
 
 minExposure = 0.1
-maxReflection = 5
+maxReflection = 15
 
 -- camera is fixed at (0, 0, d) and the screen is orthogonal to the camera and
 -- is a rectange centered in origin of size (a, b).

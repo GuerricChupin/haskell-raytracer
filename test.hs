@@ -13,5 +13,5 @@ spheres = [ Sphere (0, 0, -10)  6 (200, 0, 0) 0.3
           , Sphere (-9, 9, -7) 5 (0, 0, 255) 0.3
           ]
 
-main = putStr . show $ render (2000, 2000) (20, 20) 40 scene
+main = putStr . show $ render (1000, 1000) (20, 20) 40 scene
 

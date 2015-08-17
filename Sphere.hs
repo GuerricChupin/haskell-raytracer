@@ -11,12 +11,14 @@ import Renderable
 import GeometricTypes
 import AuxiliaryFunctions
 import Color
-import Data.List (minimumBy)
+import Data.List ( minimumBy
+                 , sortOn
+                 , zip)
 import Data.Function (on)
 import Debug.Trace
 
 epsilon :: Double
-epsilon = 1.0e-12
+epsilon = 1.0e-11
 
 data Sphere = Sphere { center  :: Point
                      , radius  :: Double
@@ -28,40 +30,28 @@ sphereIntersect :: Ray -> Sphere -> [Point]
 sphereIntersect Ray {origin = (a,b,c), dir = (x,y,z)}
                 Sphere {center = (d,e,f), radius = r}
   | cond > 0 =
-      [(a,b,c) .+ ((-p + cond).*normdir) | (-p+cond) > 0] ++
-      [(a,b,c) .+ ((-p - cond).*normdir) | (-p-cond) > 0]
+      [(a,b,c) .+ (ppc.*normdir) | ppc > 0] ++
+      [(a,b,c) .+ (pmc.*normdir) | pmc > 0]
   | otherwise = []
   where
     normdir = normalise (x,y,z)
     p = normdir `dotProd` oc
     cond = sqrt $ p^2 - (sqNorm oc) + r^2
     oc = (a,b,c) .- (d,e,f)
+    ppc = -p + cond
+    pmc = -p - cond
 
 instance Renderable Sphere where
    hit r s = not $ null $ sphereIntersect r s
    contains s p = distance p (center s) < radius s
    --{-
-   firstIntersection ray s | distance o c > r =
-      if tc < 0
-      then Nothing
-      else if d > r
-           then Nothing
-           else Just $ o .+ (t1 .* u)
-                         | otherwise = Just $ o .+ ((tc + t1c) .* u)
-      where tc = (c .- o) `dotProd` u
-            d = distance c (o .+ (tc .* u))
-            r = radius s
-            t1c = sqrt (r^2 - d^2)
-            t1 = tc - t1c
-            o = origin ray .+ (epsilon .* u)
-            u = normalise (dir ray)
-            c = center s
-   ---}
-   {-
-   firstIntersection ray s | null l = Nothing
-                           | otherwise = Just $ minimumBy (compare `on` (distance (origin ray))) l
-                           -}
-                           where l = sphereIntersect ray s
+   firstIntersection ray s
+     | null distMap = Nothing
+     | otherwise = Just $ fst $ head $ sortOn (snd) $ distMap
+     where
+       inters = sphereIntersect ray s
+       distMap =
+         filter ((>0) . snd) $ zip inters $ map (distance (origin ray)) $ inters
    normal s p = Ray { origin = p
                     , dir    = p .- center s}
    colorAt p s = color s
