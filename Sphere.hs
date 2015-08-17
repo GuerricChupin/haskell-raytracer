@@ -1,12 +1,9 @@
 module Sphere ( Sphere (Sphere)
               , center
               , radius
-              , color
-              , reflect
               , sphereIntersect
               ) where 
 
-import Data.List (nub)
 import Renderable
 import GeometricTypes
 import AuxiliaryFunctions
@@ -15,6 +12,8 @@ import Data.List ( minimumBy
                  )
 import Data.Function (on)
 import Debug.Trace
+import Data.Maybe (isJust)
+import Material
 
 epsilon :: Double
 epsilon = 1.0e-11
@@ -22,13 +21,12 @@ epsilon = 1.0e-11
 
 data Sphere = Sphere { center  :: Point
                      , radius  :: Double
-                     , color   :: Color
-                     , reflect :: Double
+                     , mat :: Material
                      } deriving (Eq)
 
 sphereIntersect :: Ray -> Sphere -> [Point]
 sphereIntersect Ray {origin = (a,b,c), dir = (x,y,z)}
-                Sphere {center = (d,e,f), radius = r}
+                Sphere {center = (d,e,f), radius = r, mat = _}
   | cond > 0 =
       [(a,b,c) .+ (ppc.*normdir) | ppc > epsilon] ++
       [(a,b,c) .+ (pmc.*normdir) | pmc > epsilon]
@@ -42,15 +40,13 @@ sphereIntersect Ray {origin = (a,b,c), dir = (x,y,z)}
     pmc = -p - cond
 
 instance Renderable Sphere where
-   hit r s = not $ null $ sphereIntersect r s
+   hit r s = isJust $ firstIntersection r s
    contains s p = distance p (center s) < radius s
-   --{-
    firstIntersection ray s
       | null inters = Nothing
       | otherwise   = Just $
          minimumBy (compare `on` (distance (origin ray))) inters
       where inters = sphereIntersect ray s
-   normal s p = Ray { origin = p
-                    , dir    = p .- center s}
-   colorAt p s = color s
-   reflectAt p s = reflect s
+   normal s p = p .- center s
+   colorAt _ Sphere { mat = m } = color m
+   reflectAt _ Sphere { mat = m } = reflect m

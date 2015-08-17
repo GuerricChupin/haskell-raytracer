@@ -7,7 +7,7 @@ module Renderable ( Renderable
                   , reflectAt
                   ) where
 
-import GeometricTypes (Ray, Point)
+import GeometricTypes (Ray, Point, Vector)
 import Color
 
 class Renderable a where
@@ -15,6 +15,6 @@ class Renderable a where
    contains :: a -> Point -> Bool
    firstIntersection :: Ray -> a -> Maybe Point
    -- undefined result if the point is not on the object
-   normal :: a -> Point -> Ray
+   normal :: a -> Point -> Vector
    colorAt :: Point -> a -> Color
    reflectAt :: Point -> a -> Double
