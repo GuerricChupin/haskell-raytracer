@@ -12,8 +12,7 @@ import GeometricTypes
 import AuxiliaryFunctions
 import Color
 import Data.List ( minimumBy
-                 , sortOn
-                 , zip)
+                 )
 import Data.Function (on)
 import Debug.Trace
 
@@ -46,12 +45,10 @@ instance Renderable Sphere where
    contains s p = distance p (center s) < radius s
    --{-
    firstIntersection ray s
-     | null distMap = Nothing
-     | otherwise = Just $ fst $ head $ sortOn (snd) $ distMap
-     where
-       inters = sphereIntersect ray s
-       distMap =
-         filter ((>0) . snd) $ zip inters $ map (distance (origin ray)) $ inters
+      | null inters = Nothing
+      | otherwise   = Just $
+         minimumBy (compare `on` (distance (origin ray))) inters
+      where inters = sphereIntersect ray s
    normal s p = Ray { origin = p
                     , dir    = p .- center s}
    colorAt p s = color s
