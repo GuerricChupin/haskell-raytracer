@@ -1,12 +1,9 @@
 module Sphere ( Sphere (Sphere)
               , center
               , radius
-              , color
-              , reflect
               , sphereIntersect
               ) where 
 
-import Data.List (nub)
 import Renderable
 import GeometricTypes
 import AuxiliaryFunctions
@@ -14,14 +11,15 @@ import Color
 import Data.List (minimumBy)
 import Data.Function (on)
 import Debug.Trace
+import Data.Maybe (isJust)
+import Material
 
 epsilon :: Double
 epsilon = 1.0e-12
 
 data Sphere = Sphere { center  :: Point
                      , radius  :: Double
-                     , color   :: Color
-                     , reflect :: Double
+                     , mat :: Material
                      } deriving (Eq)
 
 sphereIntersect :: Ray -> Sphere -> [Point]
@@ -38,7 +36,7 @@ sphereIntersect Ray {origin = (a,b,c), dir = (x,y,z)}
     oc = (a,b,c) .- (d,e,f)
 
 instance Renderable Sphere where
-   hit r s = not $ null $ sphereIntersect r s
+   hit r s = isJust $ firstIntersection r s
    contains s p = distance p (center s) < radius s
    --{-
    firstIntersection ray s | distance o c > r =
@@ -57,12 +55,6 @@ instance Renderable Sphere where
             u = normalise (dir ray)
             c = center s
    ---}
-   {-
-   firstIntersection ray s | null l = Nothing
-                           | otherwise = Just $ minimumBy (compare `on` (distance (origin ray))) l
-                           -}
-                           where l = sphereIntersect ray s
-   normal s p = Ray { origin = p
-                    , dir    = p .- center s}
-   colorAt p s = color s
-   reflectAt p s = reflect s
+   normal s p = p .- center s
+   colorAt _ Sphere { mat = m } = color m
+   reflectAt _ Sphere { mat = m } = reflect m

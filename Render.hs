@@ -41,7 +41,7 @@ pointColor scene d acc r | acc >= maxReflection || isNothing hit = black
    where
    hit = closestHit (objs scene) r
    (obj, p) = fromJust hit
-   n = normalise $ dir $ normal obj p
+   n = normalise $ normal obj p
    lightDir = normalise $ direction (source scene)
    cameraPos = (0, 0, d)
    lightRay = Ray {origin = p, dir = lightDir}

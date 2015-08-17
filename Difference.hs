@@ -17,7 +17,8 @@ instance Renderable Difference where
       | otherwise      = Just p
       where hit = firstIntersection r a
             p   = fromJust hit
-   normal (Diff a b) p = normal a p
+   normal (Diff a b) p | b `contains` p = normal b p
+                       | otherwise      = normal a p
    colorAt p (Diff a b) = colorAt p a
    reflectAt p (Diff a b) = reflectAt p a
 
