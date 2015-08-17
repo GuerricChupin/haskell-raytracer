@@ -6,7 +6,7 @@ import Difference
 import AuxiliaryFunctions
 import GeometricTypes
 
-main = putStr . show $ render (400, 400) (20, 20) 40 scene
+main = putStr . show $ render (1000, 1000) (20, 20) 40 scene
 
 scene = Scene {
      objs = map MkSceneObject spheres ++

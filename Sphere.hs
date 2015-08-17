@@ -19,6 +19,7 @@ import Debug.Trace
 epsilon :: Double
 epsilon = 1.0e-11
 
+
 data Sphere = Sphere { center  :: Point
                      , radius  :: Double
                      , color   :: Color
@@ -29,8 +30,8 @@ sphereIntersect :: Ray -> Sphere -> [Point]
 sphereIntersect Ray {origin = (a,b,c), dir = (x,y,z)}
                 Sphere {center = (d,e,f), radius = r}
   | cond > 0 =
-      [(a,b,c) .+ (ppc.*normdir) | ppc > 0] ++
-      [(a,b,c) .+ (pmc.*normdir) | pmc > 0]
+      [(a,b,c) .+ (ppc.*normdir) | ppc > epsilon] ++
+      [(a,b,c) .+ (pmc.*normdir) | pmc > epsilon]
   | otherwise = []
   where
     normdir = normalise (x,y,z)
