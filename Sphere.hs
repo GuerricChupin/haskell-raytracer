@@ -51,3 +51,4 @@ instance Renderable Sphere where
    colorAt _ Sphere { mat = m } = color m
    reflectAt _ Sphere { mat = m } = reflect m
    opacityAt _ Sphere { mat = m } = opacity m
+   refractAt _ Sphere { mat = m } = refract m

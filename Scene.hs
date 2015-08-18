@@ -21,6 +21,7 @@ instance Renderable SceneObject where
    colorAt p (MkSceneObject a) = colorAt p a
    reflectAt p (MkSceneObject a) = reflectAt p a
    opacityAt p (MkSceneObject a) = opacityAt p a
+   refractAt p (MkSceneObject a) = refractAt p a
    
 data Scene = Scene { objs :: [SceneObject]
                    , source :: LightSource

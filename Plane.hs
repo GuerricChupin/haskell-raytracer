@@ -29,3 +29,4 @@ instance R.Renderable Plane where
   colorAt _ Plane { mat = m } = color m
   reflectAt _ Plane { mat = m } = reflect m
   opacityAt _ Plane { mat = m } = opacity m
+  refractAt _ Plane { mat = m } = refract m
