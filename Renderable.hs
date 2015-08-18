@@ -15,8 +15,6 @@ import Material
 data IntersectInfo = IntersectInfo { point :: Point
                                    , normal :: Vector
                                    , localMat :: Material
-                                   -- refraction index of the new medium
-                                   , n2 :: Double
                                    }
 
 class Renderable a where

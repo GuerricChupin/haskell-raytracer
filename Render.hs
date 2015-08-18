@@ -70,7 +70,7 @@ pointColor scene d acc acc' r | acc >= maxReflection
    rSin = refrRatio * iSin
    refrDir = refrRatio.*(dir r) .+
              ((refrRatio*(sqrt (1 - iSin^2)) - (sqrt (1-rSin^2))).* n)
-   refrRay = Ray {origin = p, dir = refrDir, refr = refractAt p obj}
+   refrRay = Ray {origin = p, dir = refrDir, refr = objRefr}
    refrColor = pointColor scene d acc (acc' + 1) refrRay
    refrResult =
      if totRefl
