@@ -1,6 +1,7 @@
 module Material ( Material (Mat)
                 , color
                 , reflect
+                , anyMat
                 ) where
 
 import Color
@@ -12,8 +13,8 @@ data Material = Mat { color :: Color
 
 -- material with arbitrary characterics, typically to use when the material
 -- is not important
-defaultMat :: Material
-defaultMat = Mat { color = black
+anyMat :: Material
+anyMat = Mat { color = black
                  , reflect = 0
                  }
 

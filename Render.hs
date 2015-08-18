@@ -9,18 +9,20 @@ import qualified Data.Matrix as M
 import GeometricTypes
 import AuxiliaryFunctions
 import Renderable
-import Data.List (maximumBy,minimumBy)
-import Data.Function (on)
 import LightSource
 import Data.Maybe (isNothing, fromJust, isJust)
 import Debug.Trace
+import Material
 
 minExposure = 0.1
 maxReflection = 15
 
 -- camera is fixed at (0, 0, d) and the screen is orthogonal to the camera and
 -- is a rectange centered in origin of size (a, b).
-render :: ImageDefinition -> (Double, Double) -> Double -> Scene -> Image
+render :: (Renderable a)
+       => ImageDefinition -> (Double, Double) -> Double
+       -> Scene a
+       -> Image
 render (w, h) (a, b) d scene = Image $ M.fromList h w $
    map (pointColor scene d 0)
       [Ray {origin = cameraPos,
@@ -33,36 +35,25 @@ render (w, h) (a, b) d scene = Image $ M.fromList h w $
      [b * (-0.5 + y / fromIntegral h) | y <- map fromIntegral [(h - 1), (h - 2)..0]]
 
 -- Only the closest intersection to the screen is considered.
-pointColor :: Scene -> Double -> Int -> Ray -> Color
+pointColor :: (Renderable a)
+           => Scene a -> Double -> Int -> Ray -> Color
 pointColor scene d acc r | acc >= maxReflection || isNothing hit = black
                          | otherwise   =
-   darken ((1-reflFactor) * max minExposure realExposure) (colorAt p obj) .+
+   darken ((1-reflFactor) * max minExposure realExposure) (color mat) .+
    darken reflFactor reflColor
    where
-   hit = closestHit (objs scene) r
-   (obj, p) = fromJust hit
-   n = normalise $ normal obj p
+   hit = firstIntersection r (world scene)
+   IntersectInfo {point = p, normal = n', localMat = mat} = fromJust hit
+   n = normalise n'
    lightDir = normalise $ direction (source scene)
    cameraPos = (0, 0, d)
    lightRay = Ray {origin = p, dir = lightDir}
-   shadow = isJust $ closestHit (objs scene) lightRay
+   shadow = isJust $ firstIntersection lightRay $ world scene
    realExposure =
      if shadow
      then 0
      else max 0 (lightDir `dotProd` n)
-   reflFactor = reflectAt p obj
+   reflFactor = reflect mat
    reflRay = Ray {origin = p, dir = neg (dir r `sym` n)}
    reflColor = pointColor scene d (acc + 1) reflRay
-
-closestHit :: [SceneObject] -> Ray -> Maybe (SceneObject, Point)
-closestHit objs r
-   | null inters = Nothing
-   | otherwise   = Just $ minimumBy (compare `on` (distance o . snd)) inters
-   where inters = rmNothing $ map (\o -> (o, firstIntersection r o)) objs
-         o = origin r
-
-rmNothing :: [(a, Maybe b)] -> [(a, b)]
-rmNothing [] = []
-rmNothing ((_, Nothing) : xs) = rmNothing xs
-rmNothing ((y, Just x) : xs) = (y,x) : rmNothing xs
 

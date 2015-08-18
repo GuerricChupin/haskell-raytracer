@@ -44,9 +44,10 @@ instance Renderable Sphere where
    contains s p = distance p (center s) < radius s
    firstIntersection ray s
       | null inters = Nothing
-      | otherwise   = Just $
-         minimumBy (compare `on` (distance (origin ray))) inters
+      | otherwise   = Just $ IntersectInfo { point = p
+                                           , normal = p .- center s
+                                           , localMat = mat s
+                                           }
       where inters = sphereIntersect ray s
-   normal s p = p .- center s
-   colorAt _ Sphere { mat = m } = color m
-   reflectAt _ Sphere { mat = m } = reflect m
+            p = minimumBy (compare `on` (distance (origin ray))) inters
+

@@ -9,6 +9,7 @@ module AuxiliaryFunctions ( (.+)
                           , normalise
                           , distance
                           , sym
+                          , minOn
                           ) where
 
 import GeometricTypes
@@ -49,3 +50,10 @@ distance a b = norm (b .- a)
 
 sym :: Vector -> Vector -> Vector
 sym u n = (2 * u `dotProd` n) .* normalise n .- u
+
+minOn :: (Ord b) => (a -> b) -> a -> a -> a
+minOn f a b = case compare (f a) (f b) of
+   LT -> a
+   GT -> b
+   EQ -> a
+
