@@ -3,6 +3,7 @@ module Material ( Material (Mat)
                 , reflect
                 , refract
                 , opacity
+                , anyMat
                 ) where
 
 import Color
@@ -18,10 +19,10 @@ data Material = Mat { color :: Color
 
 -- material with arbitrary characterics, typically to use when the material
 -- is not important
-defaultMat :: Material
-defaultMat = Mat { color = black
-                 , reflect = 0
-                 , refract = 1
-                 , opacity = 1
-                 }
+anyMat :: Material
+anyMat = Mat { color = black
+             , reflect = 0
+             , refract = 1
+             , opacity = 1
+             }
 

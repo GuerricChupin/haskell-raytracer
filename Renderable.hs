@@ -1,24 +1,26 @@
 module Renderable ( Renderable
+                  , IntersectInfo (IntersectInfo)
+                  , point
+                  , normal
+                  , localMat
                   , hit
                   , contains
                   , firstIntersection
-                  , normal
-                  , colorAt
-                  , reflectAt
-                  , opacityAt
-                  , refractAt
                   ) where
 
 import GeometricTypes (Ray, Point, Vector)
-import Color
+import Material
+
+-- Type storing the characteristics of a ray-object intersection
+data IntersectInfo = IntersectInfo { point :: Point
+                                   , normal :: Vector
+                                   , localMat :: Material
+                                   -- refraction index of the new medium
+                                   , n2 :: Double
+                                   }
 
 class Renderable a where
    hit :: Ray -> a -> Bool
    contains :: a -> Point -> Bool
-   firstIntersection :: Ray -> a -> Maybe Point
-   -- undefined result if the point is not on the object
-   normal :: a -> Point -> Vector
-   colorAt :: Point -> a -> Color
-   reflectAt :: Point -> a -> Double
-   opacityAt :: Point -> a -> Double
-   refractAt :: Point -> a -> Double
+   firstIntersection :: Ray -> a -> Maybe IntersectInfo
+

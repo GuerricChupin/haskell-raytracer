@@ -1,24 +1,23 @@
 module Difference ( Difference (Diff)
+                  , (\\\)
                   ) where
 
-import Scene
 import Renderable
 import Data.Maybe (isNothing, fromJust, isJust)
 import GeometricTypes
 
-data Difference = Diff SceneObject SceneObject
+data Difference l r = Diff l r
 
-instance Renderable Difference where
+(\\\) :: l -> r -> Difference l r
+l \\\ r = Diff l r
+
+instance (Renderable l, Renderable r) => Renderable (Difference l r) where
    hit r d = isJust $ firstIntersection r d
-   contains (Diff a b) p = not (b `contains` p) && (a `contains` p)
-   firstIntersection r d@(Diff a b)
+   contains (Diff l r) p = not (r `contains` p) && (l `contains` p)
+   firstIntersection ray d@(Diff l r)
       | isNothing hit  = Nothing
-      | b `contains` p = firstIntersection (r { origin = p }) d
-      | otherwise      = Just p
-      where hit = firstIntersection r a
-            p   = fromJust hit
-   normal (Diff a b) p | b `contains` p = normal b p
-                       | otherwise      = normal a p
-   colorAt p (Diff a b) = colorAt p a
-   reflectAt p (Diff a b) = reflectAt p a
+      | r `contains` p = firstIntersection (ray { origin = p }) d
+      | otherwise      = hit
+      where hit = firstIntersection ray l
+            info@IntersectInfo { point = p } = fromJust hit
 
