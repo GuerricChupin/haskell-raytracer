@@ -41,13 +41,18 @@ sphereIntersect Ray {origin = (a,b,c), dir = (x,y,z)}
 
 instance Renderable Sphere where
    hit r s = isJust $ firstIntersection r s
-   contains s p = distance p (center s) < radius s
+   contains s p = distance p (center s) < radius s - epsilon
    firstIntersection ray s
       | null inters = Nothing
       | otherwise   = Just $ IntersectInfo { point = p
                                            , normal = p .- center s
                                            , localMat = mat s
+                                           , n2 = if rayEnters
+                                                  then refract $ mat s
+                                                  else outerRefr
                                            }
       where inters = sphereIntersect ray s
             p = minimumBy (compare `on` (distance (origin ray))) inters
+            o = origin ray
+            rayEnters = (p .- center s) `dotProd` dir ray < epsilon
 

@@ -3,6 +3,8 @@ module Renderable ( Renderable
                   , point
                   , normal
                   , localMat
+                  , n2
+                  , outerRefr
                   , hit
                   , contains
                   , firstIntersection
@@ -15,7 +17,14 @@ import Material
 data IntersectInfo = IntersectInfo { point :: Point
                                    , normal :: Vector
                                    , localMat :: Material
+                                   -- refraction index of the medium being
+                                   -- entered in
+                                   , n2 :: Double
                                    }
+
+-- refraction index of the outer space
+outerRefr :: Double
+outerRefr = 1
 
 class Renderable a where
    hit :: Ray -> a -> Bool

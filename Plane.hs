@@ -27,6 +27,7 @@ instance R.Renderable Plane where
       | otherwise = Just $ R.IntersectInfo { R.point = o .+ (t .* u)
                                            , R.normal = n
                                            , R.localMat = mat
+                                           , R.n2 = R.outerRefr
                                            }
       where t = -((o .- p) `dotProd` n) / (u `dotProd` n)
 

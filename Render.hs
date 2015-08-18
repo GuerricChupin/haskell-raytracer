@@ -42,13 +42,13 @@ pointColor :: (Renderable a)
 pointColor scene d acc acc' r | acc >= maxReflection
                                 || acc' >= maxRefraction
                                 || isNothing hit = black
-                              | otherwise =
+                              | otherwise = --traceShow (n2, dir r `crossProd` refrDir)
    darken (op * (1-reflFactor) * max minExposure realExposure) (color mat) .+
    darken reflFactor reflColor .+
    refrResult
    where
    hit = firstIntersection r (world scene)
-   IntersectInfo {point = p, normal = n', localMat = mat} = fromJust hit
+   IntersectInfo {point = p, normal = n', localMat = mat, n2 = n2} = fromJust hit
    n = normalise n'
    lightDir = normalise $ direction (source scene)
    cameraPos = (0, 0, d)
@@ -58,22 +58,21 @@ pointColor scene d acc acc' r | acc >= maxReflection
      if shadow
      then 0
      else max 0 (lightDir `dotProd` n)
-   curRefr = refr r
+   n1 = refr r
    reflFactor = reflect mat
-   reflRay = Ray {origin = p, dir = neg (dir r `sym` n), refr = curRefr}
+   reflRay = Ray {origin = p, dir = neg (dir r `sym` n), refr = n1}
    reflColor = pointColor scene d (acc + 1) acc' reflRay
    op = opacity mat
-   objRefr = refract mat
    iSin = norm (n `crossProd` (dir r)) / ((norm (dir r)) * (norm n))
-   refrRatio = curRefr / objRefr
-   totRefl = refrRatio * iSin > 1
+   refrRatio = n1 / n2
+   totRefl = rSin > 1
    rSin = refrRatio * iSin
    refrDir = refrRatio.*(dir r) .+
              ((refrRatio*(sqrt (1 - iSin^2)) - (sqrt (1-rSin^2))).* n)
-   refrRay = Ray {origin = p, dir = refrDir, refr = objRefr}
+   refrRay = Ray {origin = p, dir = refrDir, refr = n2}
    refrColor = pointColor scene d acc (acc' + 1) refrRay
    refrResult =
      if totRefl
-     then black
+     then white
      else darken ((1 - op) * (1 - reflFactor)) refrColor
 

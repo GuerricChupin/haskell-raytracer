@@ -11,6 +11,6 @@ type Vector = (Double, Double, Double)
 
 data Ray = Ray { origin :: Point
                , dir :: Vector
-               -- refraction index in the current middle
+               -- refraction index in the current medium
                , refr :: Double
                } 
