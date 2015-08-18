@@ -5,6 +5,7 @@ module Renderable ( Renderable
                   , normal
                   , colorAt
                   , reflectAt
+                  , opacityAt
                   ) where
 
 import GeometricTypes (Ray, Point, Vector)
@@ -18,3 +19,4 @@ class Renderable a where
    normal :: a -> Point -> Vector
    colorAt :: Point -> a -> Color
    reflectAt :: Point -> a -> Double
+   opacityAt :: Point -> a -> Double

@@ -50,3 +50,4 @@ instance Renderable Sphere where
    normal s p = p .- center s
    colorAt _ Sphere { mat = m } = color m
    reflectAt _ Sphere { mat = m } = reflect m
+   opacityAt _ Sphere { mat = m } = opacity m

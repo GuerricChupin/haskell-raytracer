@@ -16,13 +16,14 @@ import Data.Maybe (isNothing, fromJust, isJust)
 import Debug.Trace
 
 minExposure = 0.1
-maxReflection = 15
+maxReflection = 5
+maxRefraction = 5
 
 -- camera is fixed at (0, 0, d) and the screen is orthogonal to the camera and
 -- is a rectange centered in origin of size (a, b).
 render :: ImageDefinition -> (Double, Double) -> Double -> Scene -> Image
 render (w, h) (a, b) d scene = Image $ M.fromList h w $
-   map (pointColor scene d 0)
+   map (pointColor scene d 0 0)
       [Ray {origin = cameraPos,
          dir    = (x, y, 0) .- cameraPos} | y <- ordinates, x <- abscissas]
    where
@@ -33,11 +34,12 @@ render (w, h) (a, b) d scene = Image $ M.fromList h w $
      [b * (-0.5 + y / fromIntegral h) | y <- map fromIntegral [(h - 1), (h - 2)..0]]
 
 -- Only the closest intersection to the screen is considered.
-pointColor :: Scene -> Double -> Int -> Ray -> Color
-pointColor scene d acc r | acc >= maxReflection || isNothing hit = black
-                         | otherwise   =
-   darken ((1-reflFactor) * max minExposure realExposure) (colorAt p obj) .+
-   darken reflFactor reflColor
+pointColor :: Scene -> Double -> Int -> Int -> Ray -> Color
+pointColor scene d acc acc' r | acc >= maxReflection || acc' >= maxRefraction || isNothing hit = black
+                              | otherwise   =
+   darken (op * (1-reflFactor) * max minExposure realExposure) (colorAt p obj) .+
+   darken reflFactor reflColor .+
+   darken ((1 - op) * (1 - reflFactor)) refrColor
    where
    hit = closestHit (objs scene) r
    (obj, p) = fromJust hit
@@ -52,7 +54,10 @@ pointColor scene d acc r | acc >= maxReflection || isNothing hit = black
      else max 0 (lightDir `dotProd` n)
    reflFactor = reflectAt p obj
    reflRay = Ray {origin = p, dir = neg (dir r `sym` n)}
-   reflColor = pointColor scene d (acc + 1) reflRay
+   reflColor = pointColor scene d (acc + 1) acc' reflRay
+   op = opacityAt p obj
+   refrRay = Ray {origin = p, dir = dir r}
+   refrColor = pointColor scene d acc (acc' + 1) refrRay
 
 closestHit :: [SceneObject] -> Ray -> Maybe (SceneObject, Point)
 closestHit objs r
