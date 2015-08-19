@@ -42,7 +42,7 @@ pointColor scene d acc acc' r
   | acc >= maxReflection
     || acc' >= maxRefraction
     || isNothing hit = black
-  | otherwise = objResult .+ reflResult .+ refrResult
+  | otherwise = objResult .+ reflResult .+ refrResult .+ reflRefrResult
   where
     -- minimum informations
     hit = firstIntersection r (world scene)
@@ -68,8 +68,8 @@ pointColor scene d acc acc' r
     reflRay = Ray {origin = p, dir = neg (dir r `sym` n), refr = n1}
     reflColor = pointColor scene d (acc + 1) acc' reflRay
     reflResult
-      | reflCoef == 0 = black
-      | otherwise = darken (reflCoef*reflFactor) reflColor
+      | reflFactor == 0 = black
+      | otherwise = darken reflFactor reflColor
     -- refraction
     n1 = refr r
     iSin = norm (n `crossProd` (dir r)) / ((norm (dir r)) * (norm n))
@@ -95,4 +95,7 @@ pointColor scene d acc acc' r
     refrResult
       | totRefl || op == 1 || transCoef == 0 = black
       | otherwise =  darken ((1 - op) * transCoef * (1-reflFactor)) refrColor
-
+    -- reflected part after the refraction
+    reflRefrResult
+      | reflCoef == 0 = black
+      | otherwise = darken ((1 - op) * reflCoef * (1-reflFactor)) reflColor
