@@ -4,7 +4,7 @@ module Difference ( Difference (Diff)
 
 import Renderable
 import Data.Maybe (isNothing, fromJust, isJust)
-import GeometricTypes
+import Geometry
 
 data Difference l r = Diff l r
 

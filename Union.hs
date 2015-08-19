@@ -3,8 +3,8 @@ module Union ( Union (Union)
              ) where
 
 import Renderable
-import GeometricTypes
-import AuxiliaryFunctions (minOn, distance)
+import Geometry
+import AuxiliaryFunctions (minOn)
 import Material
 import Debug.Trace
 

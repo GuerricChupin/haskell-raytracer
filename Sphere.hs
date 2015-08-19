@@ -5,8 +5,7 @@ module Sphere ( Sphere (Sphere)
               ) where 
 
 import Renderable
-import GeometricTypes
-import AuxiliaryFunctions
+import Geometry
 import Color
 import Data.List ( minimumBy
                  )

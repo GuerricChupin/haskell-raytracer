@@ -10,7 +10,7 @@ module Renderable ( Renderable
                   , firstIntersection
                   ) where
 
-import GeometricTypes (Ray, Point, Vector)
+import Geometry (Ray, Point, Vector)
 import Material
 
 -- Type storing the characteristics of a ray-object intersection

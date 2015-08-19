@@ -2,7 +2,7 @@ module LightSource ( LightSource (LightSource)
                    , direction
                    ) where
                    
-import GeometricTypes
+import Geometry (Vector)
 
 data LightSource = LightSource { direction :: Vector }
 

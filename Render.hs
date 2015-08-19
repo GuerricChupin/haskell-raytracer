@@ -6,8 +6,7 @@ import Sphere
 import Image
 import Color
 import qualified Data.Matrix as M
-import GeometricTypes
-import AuxiliaryFunctions
+import Geometry
 import Renderable
 import LightSource
 import Data.Maybe (isNothing, fromJust, isJust)

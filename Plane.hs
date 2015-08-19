@@ -4,10 +4,16 @@ module Plane ( Plane (Plane)
              , mat
              ) where
 
-import GeometricTypes (Point, Vector, Ray (..))
-import qualified GeometricTypes as G
+import Geometry ( Point
+                , Vector
+                , Ray (..)
+                , dotProd
+                , (.+)
+                , (.-)
+                , (.*)
+                )
+import qualified Geometry as G
 import qualified Renderable as R
-import AuxiliaryFunctions
 import Material
 
 epsilon :: Double
