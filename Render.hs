@@ -67,8 +67,10 @@ pointColor scene d acc acc' r | acc >= maxReflection
    refrRatio = n1 / n2
    totRefl = rSin > 1
    rSin = refrRatio * iSin
-   refrDir = refrRatio.*(dir r) .+
-             ((refrRatio*(sqrt (1 - iSin^2)) - (sqrt (1-rSin^2))).* n)
+   refrDir = (refrRatio / iN) .*(dir r) .+
+             ((refrRatio * (sqrt (1 - iSin^2)) - (sqrt (1-rSin^2))).* realNormal)
+      where realNormal = if dir r `dotProd` n < 0 then n else neg n
+            iN = norm (dir r)
    refrRay = Ray {origin = p, dir = refrDir, refr = n2}
    refrColor = pointColor scene d acc (acc' + 1) refrRay
    refrResult =
