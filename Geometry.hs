@@ -15,7 +15,11 @@ module Geometry ( Point
                 , normalise
                 , distance
                 , sym
+                , rotateVect
+                , rotatePt
                 ) where
+
+import Debug.Trace
 
 type Point = (Double, Double, Double)
 type Vector = (Double, Double, Double)
@@ -54,11 +58,24 @@ norm :: Vector -> Double
 norm = sqrt . sqNorm
 
 normalise :: Vector -> Vector
-normalise x = (1/norm x) .* x
+normalise x | n == 0    = (0, 0, 0)
+            | otherwise = (1/n) .* x
+            where n = norm x
 
 distance :: Point -> Point -> Double
 distance a b = norm (b .- a)
 
 sym :: Vector -> Vector -> Vector
 sym u n = (2 * u `dotProd` n) .* normalise n .- u
+
+rotateVect :: Vector -> Double -> Vector -> Vector
+rotateVect axis angle u = axisProj .+ rotOrthProj
+   where axisProj = (u `dotProd` uZ) .* uZ
+         uZ = normalise axis
+         uY = normalise $ uZ `crossProd` u
+         uX = uY `crossProd` uZ
+         rotOrthProj = (u `dotProd` uX) .* ((cos angle .* uX) .+ (sin angle .* uY))
+
+rotatePt :: Point -> Vector -> Double -> Point -> Point
+rotatePt origin axis angle = (origin .+) . (rotateVect axis angle) . (.- origin)
 
