@@ -1,13 +1,19 @@
+{-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE FlexibleInstances #-}
+
 module Material ( Material (Mat)
                 , color
                 , reflect
                 , refract
                 , opacity
                 , anyMat
+                , outerRefr
                 ) where
 
 import Color
+import Geometry (Point)
 
+-- describes the rendering characteristics of an object at a given point.
 data Material = Mat { color :: Color
                     -- reflect factor between 0 and 1
                     , reflect :: Double
@@ -15,7 +21,7 @@ data Material = Mat { color :: Color
                     , refract :: Double
                     -- coefficient between 0 and 1
                     , opacity :: Double
-                    } deriving (Eq)
+                    } deriving (Eq, Show)
 
 -- material with arbitrary characterics, typically to use when the material
 -- is not important
@@ -25,4 +31,8 @@ anyMat = Mat { color = black
              , refract = 1
              , opacity = 1
              }
+
+-- refraction index of the outer space
+outerRefr :: Double
+outerRefr = 1
 

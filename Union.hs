@@ -6,16 +6,14 @@ import Renderable
 import Geometry
 import AuxiliaryFunctions (minOn)
 import Material
-import Debug.Trace
 
 data Union a b = Union a b
 
+infixl 6 |||
 (|||) :: a -> b -> Union a b
 a ||| b = Union a b
 
 instance (Renderable a, Renderable b) => Renderable (Union a b) where
-   hit r (Union a b) = hit r a || hit r b
-   contains (Union a b) p = contains a p || contains b p
    firstIntersection r (Union a b) = case (m, m') of
       (Nothing, m') -> m'
       (m, Nothing)  -> m

@@ -5,8 +5,6 @@ module Renderable ( Renderable
                   , localMat
                   , n2
                   , outerRefr
-                  , hit
-                  , contains
                   , firstIntersection
                   ) where
 
@@ -20,14 +18,8 @@ data IntersectInfo = IntersectInfo { point :: Point
                                    -- refraction index of the medium being
                                    -- entered in
                                    , n2 :: Double
-                                   }
-
--- refraction index of the outer space
-outerRefr :: Double
-outerRefr = 1
+                                   } deriving (Show)
 
 class Renderable a where
-   hit :: Ray -> a -> Bool
-   contains :: a -> Point -> Bool
    firstIntersection :: Ray -> a -> Maybe IntersectInfo
 

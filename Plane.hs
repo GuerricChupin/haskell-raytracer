@@ -1,7 +1,6 @@
 module Plane ( Plane (Plane)
              , Plane.origin
              , normal
-             , mat
              ) where
 
 import Geometry ( Point
@@ -13,27 +12,22 @@ import Geometry ( Point
                 , (.*)
                 )
 import qualified Geometry as G
-import qualified Renderable as R
-import Material
+import Intersectable
 
 epsilon :: Double
 epsilon = 1.0e-12
 
 data Plane = Plane { origin :: Point
                    , normal :: Vector
-                   , mat :: Material
                    }
 
-instance R.Renderable Plane where
-   hit Ray { G.origin = o, G.dir = u } (Plane p n _) =
+instance Intersectable Plane where
+   hit Ray { G.origin = o, G.dir = u } (Plane p n) =
       ((o .- p) `dotProd` n) * (u `dotProd` n) < 0
    contains _ _ = False
-   firstIntersection Ray { G.origin = o, G.dir = u } (Plane p n mat)
-      | t < epsilon     = Nothing
-      | otherwise = Just $ R.IntersectInfo { R.point = o .+ (t .* u)
-                                           , R.normal = n
-                                           , R.localMat = mat
-                                           , R.n2 = R.outerRefr
-                                           }
-      where t = -((o .- p) `dotProd` n) / (u `dotProd` n)
+   firstIntersection Ray { G.origin = o, G.dir = u } (Plane p n)
+      | t < epsilon || un == 0 = Nothing
+      | otherwise = Just $ (o .+ (t .* u), n, Leaving)
+      where t = -((o .- p) `dotProd` n) / un
+            un = u `dotProd` n
 

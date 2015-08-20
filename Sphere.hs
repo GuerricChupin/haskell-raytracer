@@ -4,15 +4,12 @@ module Sphere ( Sphere (Sphere)
               , sphereIntersect
               ) where 
 
-import Renderable
+import Intersectable
 import Geometry
-import Color
 import Data.List ( minimumBy
                  )
 import Data.Function (on)
-import Debug.Trace
 import Data.Maybe (isJust)
-import Material
 
 epsilon :: Double
 epsilon = 1.0e-11
@@ -20,12 +17,11 @@ epsilon = 1.0e-11
 
 data Sphere = Sphere { center  :: Point
                      , radius  :: Double
-                     , mat :: Material
                      } deriving (Eq)
 
 sphereIntersect :: Ray -> Sphere -> [Point]
 sphereIntersect Ray {origin = (a,b,c), dir = (x,y,z)}
-                Sphere {center = (d,e,f), radius = r, mat = _}
+                Sphere {center = (d,e,f), radius = r}
   | cond > 0 =
       [(a,b,c) .+ (ppc.*normdir) | ppc > epsilon] ++
       [(a,b,c) .+ (pmc.*normdir) | pmc > epsilon]
@@ -38,18 +34,17 @@ sphereIntersect Ray {origin = (a,b,c), dir = (x,y,z)}
     ppc = -p + cond
     pmc = -p - cond
 
-instance Renderable Sphere where
+instance Intersectable Sphere where
    hit r s = isJust $ firstIntersection r s
    contains s p = distance p (center s) < radius s - epsilon
    firstIntersection ray s
       | null inters = Nothing
-      | otherwise   = Just $ IntersectInfo { point = p
-                                           , normal = p .- center s
-                                           , localMat = mat s
-                                           , n2 = if rayEnters
-                                                  then refract $ mat s
-                                                  else outerRefr
-                                           }
+      | otherwise   = Just $ ( p
+                             , p .- center s
+                             , if rayEnters
+                               then Entering
+                               else Leaving
+                             )
       where inters = sphereIntersect ray s
             p = minimumBy (compare `on` (distance (origin ray))) inters
             o = origin ray
