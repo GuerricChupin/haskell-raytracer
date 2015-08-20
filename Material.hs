@@ -21,7 +21,7 @@ data Material = Mat { color :: Color
                     , refract :: Double
                     -- coefficient between 0 and 1
                     , opacity :: Double
-                    } deriving (Eq)
+                    } deriving (Eq, Show)
 
 -- material with arbitrary characterics, typically to use when the material
 -- is not important

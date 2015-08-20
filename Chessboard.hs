@@ -26,17 +26,17 @@ instance Shader Chessboard where
                             , mat1 = mat1
                             , mat2 = mat2
                             }) =
-      if (let a = f x == f y in traceShow a a)
+      if f x == f y
       then mat1
       else mat2
-      where f x = floor (x / sqSize)
+      where f x = floor (x / sqSize) `mod` 2
             (x, y) = planeCoords o uZ uX p
 
 -- returns a point's coordinates in a plane's basis.
 -- undefined if the point is not on the plane.
 -- 'direction' and 'uZ' must be normalised and distinct.
 planeCoords :: Point -> Vector -> Vector -> Point -> (Double, Double)
-planeCoords origin uZ direction p = let a = (op `dotProd` uX, op `dotProd` uY) in a
+planeCoords origin uZ direction p = (op `dotProd` uX, op `dotProd` uY)
    where op = p .- origin
          uX = normalise $ uY `crossProd` uZ
          uY = normalise $ uZ `crossProd` direction

@@ -18,7 +18,7 @@ data IntersectInfo = IntersectInfo { point :: Point
                                    -- refraction index of the medium being
                                    -- entered in
                                    , n2 :: Double
-                                   }
+                                   } deriving (Show)
 
 class Renderable a where
    firstIntersection :: Ray -> a -> Maybe IntersectInfo

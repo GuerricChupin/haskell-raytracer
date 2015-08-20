@@ -26,7 +26,8 @@ instance Intersectable Plane where
       ((o .- p) `dotProd` n) * (u `dotProd` n) < 0
    contains _ _ = False
    firstIntersection Ray { G.origin = o, G.dir = u } (Plane p n)
-      | t < epsilon     = Nothing
+      | t < epsilon || un == 0 = Nothing
       | otherwise = Just $ (o .+ (t .* u), n, Leaving)
-      where t = -((o .- p) `dotProd` n) / (u `dotProd` n)
+      where t = -((o .- p) `dotProd` n) / un
+            un = u `dotProd` n
 
