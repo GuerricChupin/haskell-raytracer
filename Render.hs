@@ -62,7 +62,7 @@ pointColor scene d acc acc' r
     objResult
       | op == 0 || reflFactor == 1 = black
       | otherwise =
-          darken (op  * (1 -reflFactor) * max minExposure realExposure) (color mat)
+          darken (op  * (1 -reflFactor) * max minExposure realExposure) (colorAt $ shader mat)
     -- reflection 
     reflFactor = reflect mat
     reflRay = Ray {origin = p, dir = neg (dir r `sym` n), refr = n1}

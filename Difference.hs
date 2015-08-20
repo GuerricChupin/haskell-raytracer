@@ -5,13 +5,15 @@ module Difference ( Difference (Diff)
 import Renderable
 import Data.Maybe (isNothing, fromJust, isJust)
 import Geometry
+import Material (Shader)
 
-data Difference l r = Diff l r
+data Difference l s r s' = Diff (l s) (r s')
 
-(\\\) :: l -> r -> Difference l r
+(\\\) :: l s -> r s' -> Difference l s r s'
 l \\\ r = Diff l r
 
-instance (Renderable l, Renderable r) => Renderable (Difference l r) where
+instance (Renderable l, Renderable r, Shader s, Shader s')
+       => Renderable (Difference l r) where
    hit r d = isJust $ firstIntersection r d
    contains (Diff l r) p = not (r `contains` p) && (l `contains` p)
    firstIntersection ray d@(Diff l r)

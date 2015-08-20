@@ -18,10 +18,10 @@ epsilon :: Double
 epsilon = 1.0e-11
 
 
-data Sphere = Sphere { center  :: Point
-                     , radius  :: Double
-                     , mat :: Material
-                     } deriving (Eq)
+data Sphere s = Sphere { center  :: Point
+                       , radius  :: Double
+                       , mat :: Material s
+                       } deriving (Eq)
 
 sphereIntersect :: Ray -> Sphere -> [Point]
 sphereIntersect Ray {origin = (a,b,c), dir = (x,y,z)}

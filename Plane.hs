@@ -19,12 +19,12 @@ import Material
 epsilon :: Double
 epsilon = 1.0e-12
 
-data Plane = Plane { origin :: Point
-                   , normal :: Vector
-                   , mat :: Material
-                   }
+data Plane s = Plane { origin :: Point
+                     , normal :: Vector
+                     , mat :: Material s
+                     }
 
-instance R.Renderable Plane where
+instance (Shader s) => R.Renderable (Plane s) where
    hit Ray { G.origin = o, G.dir = u } (Plane p n _) =
       ((o .- p) `dotProd` n) * (u `dotProd` n) < 0
    contains _ _ = False
