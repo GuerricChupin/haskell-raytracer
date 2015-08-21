@@ -7,6 +7,7 @@ module Color ( Color
 
 type Color = (Int, Int, Int)
 
+toPPM :: Color -> String
 toPPM (r, g, b) = show r ++ " " ++ show g ++ " " ++ show b
 
 white :: Color
