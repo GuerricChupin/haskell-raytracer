@@ -22,4 +22,3 @@ data IntersectInfo = IntersectInfo { point :: Point
 
 class Renderable a where
    firstIntersection :: Ray -> a -> Maybe IntersectInfo
-
