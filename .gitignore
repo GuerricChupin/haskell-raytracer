@@ -6,4 +6,5 @@
 *.swp
 *.ppm
 *.png
-
+*.eventlog
+*.dyn_*

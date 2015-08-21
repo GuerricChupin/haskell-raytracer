@@ -1,3 +1,7 @@
+{-# LANGUAGE MultiParamTypeClasses, TemplateHaskell, TypeFamilies, FlexibleInstances #-}
+
+
+
 module Geometry ( Point
                 , Vector
                 , Ray (Ray)
@@ -20,6 +24,7 @@ module Geometry ( Point
                 ) where
 
 import Debug.Trace
+import Data.Vector.Unboxed.Deriving
 
 type Point = (Double, Double, Double)
 type Vector = (Double, Double, Double)
@@ -28,7 +33,15 @@ data Ray = Ray { origin :: Point
                , dir :: Vector
                -- refraction index in the current medium
                , refr :: Double
-               } 
+               }
+
+rayToTuple (Ray o d r) = (o,d,r)
+tupleToRay (o,d,r) = Ray o d r
+
+derivingUnbox "Ray"
+  [t| Ray -> (Point, Vector, Double) |]
+  [|rayToTuple|]
+  [|tupleToRay|]
 
 (.+) :: (Num a) => (a,a,a) -> (a,a,a) -> (a,a,a)
 (a,b,c) .+ (d,e,f) = (a+d,b+e,c+f)
