@@ -12,6 +12,7 @@ import Data.Maybe (isNothing, fromJust, isJust)
 import Debug.Trace
 import Material
 import qualified Data.Array.Repa as A
+import Data.Functor.Identity
 
 minExposure = 0.1
 maxReflection = 5
@@ -24,7 +25,7 @@ render :: (Renderable a)
        -> Scene a
        -> Image
 render (w, h) (a, b) d scene =
-  Image $ A.computeS $ A.map (pointColor scene d 0 0) $ A.fromListUnboxed (A.Z A.:.h A.:.w) $
+  Image $ runIdentity $ A.computeP $ A.map (pointColor scene d 0 0) $ A.fromListUnboxed (A.Z A.:.h A.:.w) $
       [Ray {origin = cameraPos,
             dir    = (x, y, 0) .- cameraPos,
             refr   = 1} | y <- ordinates, x <- abscissas] -- :: A.Array A.U A.DIM2 Ray
