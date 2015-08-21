@@ -10,6 +10,7 @@ import Geometry ((.+), (.-))
 import qualified Geometry as G
 import Color (black, white)
 import Intersection
+import BiconvexLens
 
 main =
   putStr . show $ render (1366, 768) (27.32, 15.36) 40 scene -- std for testing
@@ -23,7 +24,7 @@ scene = Scene {
                                     , normal = rotV $ (0,0,1)
                                     }
                               (rotV (1, 0, -0.1)) 5 (Mat white 0 1 1) (Mat black 0 1 1)
-         ||| Inter (Sphere (rotP (o .+ (0,0,-r+1))) r) (Sphere (rotP (o .+ (0,0,r-1))) r) `uniform` Mat black 0.1 1.4 0
+         ||| biconvexLens o (0,0,1) 15 2 `uniform` Mat black 0.1 1.4 0
 
    , source = LightSource { direction = rotV (1,1,1) }
    }
