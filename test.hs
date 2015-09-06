@@ -14,19 +14,16 @@ import BiconvexLens
 
 main =
   putStr . show $ render (1366, 768) (27.32, 15.36) 40 scene -- std for testing
-  -- putStr . show $ render (1366, 768) (27.32, 15.36) 40 scene -- bigger
+  -- putStr . show $ render (1366 * 2, 768 * 2) (27.32, 15.36) 40 scene -- bigger
 
 scene = Scene {
-   world =   {-Sphere (rotP (o .+ (-10,0,-20))) 4 `uniform` Mat (200,0,0) 0.1 1.4 0.3
-         ||| Sphere (rotP o) 4 `uniform` Mat (0,200,0) 0.1 1.4 0.3
-         ||| Sphere (rotP (o .+ (10,0,-20))) 4 `uniform` Mat (0,0,200) 0.1 1.4 0.3
-         |||-} chessboardShaded Plane { origin = rotP (0, 0, -25)
+   world =   chessboardShaded Plane { origin = rotP (0, 0, -25)
                                     , normal = rotV $ (0,0,1)
                                     }
                               (rotV (1, 0, -0.1)) 5 (Mat white 0 1 1) (Mat black 0 1 1)
          ||| biconvexLens o (0,0,1) 15 2 `uniform` Mat black 0.1 1.4 0
 
-   , source = LightSource { direction = rotV (1,1,1) }
+   , source = LightSource { direction = rotV (0,1,0) }
    }
 
 r = 25.25
