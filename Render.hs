@@ -12,6 +12,7 @@ import Data.Maybe (isNothing, fromJust, isJust)
 import Debug.Trace
 import Material
 import qualified Data.Array.Repa as A
+import qualified Data.Array.Repa.Eval as B
 import Data.Functor.Identity
 
 minExposure = 0.1
@@ -25,10 +26,11 @@ render :: (Renderable a)
        -> Scene a
        -> Image
 render (w, h) (a, b) d scene =
-  Image $ runIdentity $ A.computeP $ A.map (pointColor scene d 0 0) $ A.fromListUnboxed (A.Z A.:.h A.:.w) $
+  Image $ runIdentity $ A.computeP $
+  A.map (pointColor scene d 0 0) $ A.fromListUnboxed (A.Z A.:.h A.:.w) $
       [Ray {origin = cameraPos,
             dir    = (x, y, 0) .- cameraPos,
-            refr   = 1} | y <- ordinates, x <- abscissas] -- :: A.Array A.U A.DIM2 Ray
+            refr   = 1} | y <- ordinates, x <- abscissas]
    where
    cameraPos = (0, 0, d)
    abscissas =
@@ -43,7 +45,7 @@ pointColor scene d acc acc' r
   | acc >= maxReflection
     || acc' >= maxRefraction
     || isNothing hit = black
-  | otherwise = objResult .+ reflResult .+ refrResult .+ reflRefrResult
+  | otherwise = (runIdentity $ A.foldP (.+) black $ A.fromListUnboxed (A.Z A.:.(4 :: Int)) ([objResult, reflResult, refrResult, reflRefrResult])) A.! (A.Z)
   where
     -- minimum informations
     hit = firstIntersection r (world scene)
