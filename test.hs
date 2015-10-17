@@ -20,7 +20,7 @@ scene = Scene {
    world =   chessboardShaded Plane { origin = rotP (0, 0, -25)
                                     , normal = rotV $ (0,0,1)
                                     }
-                              (rotV (1, 0, -0.1)) 5 (Mat white 0 1 1) (Mat black 0 1 1)
+                              (rotV (1, 0, -0.1)) 5 (Mat white 0 1 1) (Mat black 0 1 1)
          ||| biconvexLens o (0,0,1) 15 2 `uniform` Mat black 0.1 1.4 0
 
    , source = LightSource { direction = rotV (0,1,0) }

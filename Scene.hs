@@ -4,7 +4,6 @@ module Scene ( Scene (Scene)
              , (Union.|||)
              ) where
 
-import qualified Data.Matrix as M
 import Renderable
 import LightSource
 import Union ((|||))
