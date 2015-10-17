@@ -20,7 +20,7 @@ data Sphere = Sphere { center  :: Point
                      } deriving (Eq)
 
 sphereIntersect :: Ray -> Sphere -> [Point]
-sphereIntersect Ray {origin = (a,b,c), dir = (x,y,z)}
+sphereIntersect ((a,b,c),(x,y,z),_)
                 Sphere {center = (d,e,f), radius = r}
   | cond > 0 =
       [(a,b,c) .+ (ppc.*normdir) | ppc > epsilon] ++

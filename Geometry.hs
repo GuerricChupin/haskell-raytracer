@@ -4,7 +4,7 @@
 
 module Geometry ( Point
                 , Vector
-                , Ray (Ray)
+                , Ray
                 , origin
                 , dir
                 , refr
@@ -23,25 +23,21 @@ module Geometry ( Point
                 , rotatePt
                 ) where
 
-import Debug.Trace
-import Data.Vector.Unboxed.Deriving
-
 type Point = (Double, Double, Double)
 type Vector = (Double, Double, Double)
 
-data Ray = Ray { origin :: Point
-               , dir :: Vector
-               -- refraction index in the current medium
-               , refr :: Double
-               }
+-- Rays are composed of an origin and a direction. They also save the
+-- refraction index in the current medium.
+type Ray = (Point, Vector, Double)
 
-rayToTuple (Ray o d r) = (o,d,r)
-tupleToRay (o,d,r) = Ray o d r
+origin :: Ray -> Point
+origin (o, _, _) = o
 
-derivingUnbox "Ray"
-  [t| Ray -> (Point, Vector, Double) |]
-  [|rayToTuple|]
-  [|tupleToRay|]
+dir :: Ray -> Vector
+dir (_, d, _) = d
+
+refr :: Ray -> Double
+refr (_, _, r) = r
 
 (.+) :: (Num a) => (a,a,a) -> (a,a,a) -> (a,a,a)
 (a,b,c) .+ (d,e,f) = (a+d,b+e,c+f)
