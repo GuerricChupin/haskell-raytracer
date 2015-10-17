@@ -1,4 +1,10 @@
 module Chessboard ( Chessboard (Chessboard)
+                  , origin
+                  , uZ
+                  , uX
+                  , squareSize
+                  , mat1
+                  , mat2
                   , chessboardShaded
                   ) where
 
