@@ -22,10 +22,10 @@ data Plane = Plane { origin :: Point
                    }
 
 instance Intersectable Plane where
-   hit Ray { G.origin = o, G.dir = u } (Plane p n) =
+   hit (o, u, _) (Plane p n) =
       ((o .- p) `dotProd` n) * (u `dotProd` n) < 0
    contains _ _ = False
-   firstIntersection Ray { G.origin = o, G.dir = u } (Plane p n)
+   firstIntersection (o, u, _) (Plane p n)
       | t < epsilon || un == 0 = Nothing
       | otherwise = Just $ (o .+ (t .* u), n, Leaving)
       where t = -((o .- p) `dotProd` n) / un

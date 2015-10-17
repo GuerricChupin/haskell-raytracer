@@ -1,4 +1,10 @@
 module Chessboard ( Chessboard (Chessboard)
+                  , origin
+                  , uZ
+                  , uX
+                  , squareSize
+                  , mat1
+                  , mat2
                   , chessboardShaded
                   ) where
 
@@ -7,7 +13,6 @@ import Plane (Plane)
 import qualified Plane as P
 import Geometry hiding (origin)
 import Material
-import Debug.Trace
 
 -- planar chessboard shader for plane objects
 data Chessboard = Chessboard { origin     :: Point

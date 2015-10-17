@@ -9,7 +9,6 @@ import Geometry
 import Renderable
 import LightSource
 import Data.Maybe (isNothing, fromJust, isJust)
-import Debug.Trace
 import Material
 import qualified Data.Array.Repa as A
 import qualified Data.Array.Repa.Eval as B
@@ -26,17 +25,15 @@ render :: (Renderable a)
        -> Scene a
        -> Image
 render (w, h) (a, b) d scene =
-  Image $ runIdentity $ A.computeP $
-  A.map (pointColor scene d 0 0) $ A.fromListUnboxed (A.Z A.:.h A.:.w) $
-      [Ray {origin = cameraPos,
-            dir    = (x, y, 0) .- cameraPos,
-            refr   = 1} | y <- ordinates, x <- abscissas]
+  Image $ runIdentity $ A.computeP $ A.map (pointColor scene d 0 0) $
+  A.fromListUnboxed (A.Z A.:.h A.:.w) $
+      [(cameraPos, (x,y,0) .- cameraPos, 1) | y <- ordinates, x <- abscissas]
    where
-   cameraPos = (0, 0, d)
-   abscissas =
-     [a * (-0.5 + x / fromIntegral w) | x <- map fromIntegral [0..(w - 1)]]
-   ordinates =
-     [b * (-0.5 + y / fromIntegral h) | y <- map fromIntegral [(h - 1), (h - 2)..0]]
+     cameraPos = (0, 0, d)
+     abscissas =
+       [a * (-0.5 + x / fromIntegral w) | x <- map fromIntegral [0..(w - 1)]]
+     ordinates =
+       [b * (-0.5 + y / fromIntegral h) | y <- map fromIntegral [(h - 1), (h - 2)..0]]
 
 -- Only the closest intersection to the screen is considered.
 pointColor :: (Renderable a)
@@ -55,7 +52,7 @@ pointColor scene d acc acc' r
     lightDir = normalise $ direction (source scene)
     cameraPos = (0, 0, d)
     op = opacity mat
-    lightRay = Ray {origin = p, dir = lightDir, refr = 1}
+    lightRay = (p, lightDir, 1)
     -- natural object color calculation and shadowing
     shadow = isJust $ firstIntersection lightRay $ world scene
     realExposure =
@@ -69,7 +66,7 @@ pointColor scene d acc acc' r
                  (color mat)
     -- reflection 
     reflFactor = reflect mat
-    reflRay = Ray {origin = p, dir = neg (dir r `sym` n), refr = n1}
+    reflRay = (p, neg (dir r `sym` n), n1)
     reflColor = pointColor scene d (acc + 1) acc' reflRay
     reflResult
       | reflFactor == 0 = black
@@ -94,7 +91,7 @@ pointColor scene d acc acc' r
                     ((refrRatio * iCos - rCos).* realNormal)
       where realNormal = if dir r `dotProd` n < 0 then n else neg n
             iN = norm (dir r)
-    refrRay = Ray {origin = p, dir = refrDir, refr = n2}
+    refrRay = (p, refrDir, n2)
     refrColor = pointColor scene d acc (acc' + 1) refrRay
     refrResult
       | totRefl || op == 1 || transCoef == 0 = black
