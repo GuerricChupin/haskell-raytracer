@@ -13,6 +13,8 @@ module Material ( Material (Mat)
 import Color
 import Geometry (Point)
 
+import qualified Data.Array.Accelerate as A
+
 -- describes the rendering characteristics of an object at a given point.
 data Material = Mat { color :: Color
                     -- reflect factor between 0 and 1

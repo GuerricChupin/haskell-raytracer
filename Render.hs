@@ -10,9 +10,8 @@ import Renderable
 import LightSource
 import Data.Maybe (isNothing, fromJust, isJust)
 import Material
-import qualified Data.Array.Repa as A
-import qualified Data.Array.Repa.Eval as B
-import Data.Functor.Identity
+import qualified Data.Array.Accelerate as A
+import qualified Data.Array.Accelerate.CUDA as A
 
 minExposure = 0.1
 maxReflection = 5
@@ -25,8 +24,8 @@ render :: (Renderable a)
        -> Scene a
        -> Image
 render (w, h) (a, b) d scene =
-  Image $ runIdentity $ A.computeP $ A.map (pointColor scene d 0 0) $
-  A.fromListUnboxed (A.Z A.:.h A.:.w) $
+  Image $ A.run $ A.map (pointColor scene d 0 0) $
+  A.use $ A.fromList (A.Z A.:.h A.:.w) $
       [(cameraPos, (x,y,0) .- cameraPos, 1) | y <- ordinates, x <- abscissas]
    where
      cameraPos = (0, 0, d)
@@ -34,15 +33,15 @@ render (w, h) (a, b) d scene =
        [a * (-0.5 + x / fromIntegral w) | x <- map fromIntegral [0..(w - 1)]]
      ordinates =
        [b * (-0.5 + y / fromIntegral h) | y <- map fromIntegral [(h - 1), (h - 2)..0]]
-
+       
 -- Only the closest intersection to the screen is considered.
 pointColor :: (Renderable a)
-           => Scene a -> Double -> Int -> Int -> Ray -> Color
+           => Scene a -> Double -> Int -> Int -> A.Exp Ray -> A.Exp Color
 pointColor scene d acc acc' r
   | acc >= maxReflection
     || acc' >= maxRefraction
     || isNothing hit = black
-  | otherwise = (runIdentity $ A.foldP (.+) black $ A.fromListUnboxed (A.Z A.:.(4 :: Int)) ([objResult, reflResult, refrResult, reflRefrResult])) A.! (A.Z)
+  | otherwise = objResult .+ reflResult .+ refrResult .+ reflRefrResult
   where
     -- minimum informations
     hit = firstIntersection r (world scene)

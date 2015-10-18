@@ -23,6 +23,8 @@ module Geometry ( Point
                 , rotatePt
                 ) where
 
+import qualified Data.Array.Accelerate as A
+
 type Point = (Double, Double, Double)
 type Vector = (Double, Double, Double)
 
@@ -30,14 +32,17 @@ type Vector = (Double, Double, Double)
 -- refraction index in the current medium.
 type Ray = (Point, Vector, Double)
 
-origin :: Ray -> Point
-origin (o, _, _) = o
+origin :: A.Exp Ray -> A.Exp Point
+origin ray = o
+  where (o,_,_) = A.unlift ray :: (A.Exp Point, A.Exp Vector, A.Exp Double)
 
-dir :: Ray -> Vector
-dir (_, d, _) = d
+dir :: A.Exp Ray -> A.Exp Vector
+dir ray = d
+  where (_, d, _) = A.unlift ray :: (A.Exp Point, A.Exp Vector, A.Exp Double)
 
-refr :: Ray -> Double
-refr (_, _, r) = r
+refr :: A.Exp Ray -> A.Exp Double
+refr ray = r
+  where (_, _, r) = A.unlift ray :: (A.Exp Point, A.Exp Vector, A.Exp Double)
 
 (.+) :: (Num a) => (a,a,a) -> (a,a,a) -> (a,a,a)
 (a,b,c) .+ (d,e,f) = (a+d,b+e,c+f)
@@ -48,36 +53,36 @@ refr (_, _, r) = r
 neg :: (Num a) => (a,a,a) -> (a,a,a)
 neg (a,b,c) = (negate a, negate b, negate c)
 
-(.*) :: Double -> Vector -> Vector
+(.*) :: (Num a) => a -> (a,a,a) -> (a,a,a)
 n .* (a,b,c) = (n*a, n*b, n*c)
 
-dotProd :: Vector -> Vector -> Double
+dotProd :: (Num a) => (a,a,a) -> (a,a,a) -> a
 dotProd (x,y,z) (x',y',z') = x*x' + y*y' + z*z'
 
-crossProd :: Vector -> Vector -> Vector
+crossProd :: (Num a) => (a,a,a) -> (a,a,a) -> (a,a,a)
 crossProd (a,b,c) (d,e,f) = (x,y,z)
   where x = b*f - c*e
         y = c*d - a*f
         z = a*e - b*d
 
-sqNorm :: Vector -> Double
+sqNorm :: (Num a) => (a,a,a) -> a
 sqNorm x = dotProd x x
 
-norm :: Vector -> Double
+norm :: (Floating a) => (a,a,a) -> a
 norm = sqrt . sqNorm
 
-normalise :: Vector -> Vector
+normalise :: (Floating a, Eq a) => (a,a,a) -> (a,a,a)
 normalise x | n == 0    = (0, 0, 0)
             | otherwise = (1/n) .* x
             where n = norm x
 
-distance :: Point -> Point -> Double
+distance :: (Floating a) => (a,a,a) -> (a,a,a) -> a
 distance a b = norm (b .- a)
 
-sym :: Vector -> Vector -> Vector
+sym :: (Floating a, Eq a) => (a,a,a) -> (a,a,a) -> (a,a,a)
 sym u n = (2 * u `dotProd` n) .* normalise n .- u
 
-rotateVect :: Vector -> Double -> Vector -> Vector
+rotateVect :: (Floating a, Eq a) => (a,a,a) -> a -> (a,a,a) -> (a,a,a) 
 rotateVect axis angle u = axisProj .+ rotOrthProj
    where axisProj = (u `dotProd` uZ) .* uZ
          uZ = normalise axis
@@ -85,6 +90,6 @@ rotateVect axis angle u = axisProj .+ rotOrthProj
          uX = uY `crossProd` uZ
          rotOrthProj = (u `dotProd` uX) .* ((cos angle .* uX) .+ (sin angle .* uY))
 
-rotatePt :: Point -> Vector -> Double -> Point -> Point
+rotatePt :: (Floating a, Eq a) => (a,a,a) -> (a,a,a) -> a -> (a,a,a) -> (a,a,a)
 rotatePt origin axis angle = (origin .+) . (rotateVect axis angle) . (.- origin)
 
