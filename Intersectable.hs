@@ -17,8 +17,8 @@ class Intersectable a where
    hit :: Ray -> a -> Bool
    hit r obj = isJust $ firstIntersection r obj
    contains :: a -> Point -> Bool
-   firstIntersection :: Ray -> a -> Maybe ( Point
-                                          , Vector
-                                          , Direction
-                                          )
+   firstIntersection :: A.Exp Ray -> a -> Maybe ( Point
+                                                , Vector
+                                                , Direction
+                                                )
 

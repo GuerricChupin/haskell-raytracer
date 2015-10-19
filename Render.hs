@@ -37,20 +37,24 @@ render (w, h) (a, b) d scene =
 -- Only the closest intersection to the screen is considered.
 pointColor :: (Renderable a)
            => Scene a -> Double -> Int -> Int -> A.Exp Ray -> A.Exp Color
-pointColor scene d acc acc' r
+pointColor scene d acc acc' ray
   | acc >= maxReflection
     || acc' >= maxRefraction
-    || isNothing hit = black
+    || isNothing hit = A.constant black
   | otherwise = objResult .+ reflResult .+ refrResult .+ reflRefrResult
   where
+    r = A.unlift ray :: (A.Exp Point, A.Exp Vector, A.Exp Double)
     -- minimum informations
     hit = firstIntersection r (world scene)
-    IntersectInfo {point = p, normal = n', localMat = mat, n2 = n2} =
+    IntersectInfo {point = toLiftp, normal = toLiftn', localMat = mat, n2 = toLiftn2} =
       fromJust hit
+    p = A.constant toLiftp
+    n' = A.constant toLiftn'
+    n2 = A.constant toLiftn2
     n = normalise n'
     lightDir = normalise $ direction (source scene)
     cameraPos = (0, 0, d)
-    op = opacity mat
+    op = A.constant $ opacity mat
     lightRay = (p, lightDir, 1)
     -- natural object color calculation and shadowing
     shadow = isJust $ firstIntersection lightRay $ world scene
@@ -59,16 +63,16 @@ pointColor scene d acc acc' r
       then 0
       else max 0 (lightDir `dotProd` n)
     objResult
-      | op == 0 || reflFactor == 1 = black
+      | op == 0 || reflFactor == 1 = A.constant black
       | otherwise =
           darken (op  * (1 -reflFactor) * max minExposure realExposure)
                  (color mat)
     -- reflection 
-    reflFactor = reflect mat
+    reflFactor = A.constant $ reflect mat
     reflRay = (p, neg (dir r `sym` n), n1)
     reflColor = pointColor scene d (acc + 1) acc' reflRay
     reflResult
-      | reflFactor == 0 = black
+      | reflFactor == 0 = A.constant black
       | otherwise = darken reflFactor reflColor
     -- refraction
     n1 = refr r
@@ -91,11 +95,11 @@ pointColor scene d acc acc' r
       where realNormal = if dir r `dotProd` n < 0 then n else neg n
             iN = norm (dir r)
     refrRay = (p, refrDir, n2)
-    refrColor = pointColor scene d acc (acc' + 1) refrRay
+    refrColor = pointColor scene d acc (acc' + 1) (A.lift refrRay)
     refrResult
-      | totRefl || op == 1 || transCoef == 0 = black
+      | totRefl || op == 1 || transCoef == 0 = A.constant black
       | otherwise =  darken ((1 - op) * transCoef * (1-reflFactor)) refrColor
     -- reflected part after the refraction
     reflRefrResult
-      | reflCoef == 0 = black
+      | reflCoef == 0 = A.constant black
       | otherwise = darken ((1 - op) * reflCoef * (1-reflFactor)) reflColor
