@@ -5,7 +5,9 @@ module Color ( Color
              , darken
              ) where
 
-type Color = (Int, Int, Int)
+import Data.Word
+
+type Color = (Word8, Word8, Word8)
 
 toPPM :: Color -> String
 toPPM (r, g, b) = show r ++ " " ++ show g ++ " " ++ show b

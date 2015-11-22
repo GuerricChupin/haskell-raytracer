@@ -11,10 +11,10 @@ import qualified Geometry as G
 import Color (black, white)
 import Intersection
 import BiconvexLens
+import Image
 
-main =
-  putStr . show $ render (1366, 768) (27.32, 15.36) 40 scene -- std for testing
-  -- putStr . show $ render (1366 * 2, 768 * 2) (27.32, 15.36) 40 scene -- bigger
+main = render (1366, 768) (27.32, 15.36) 40 scene >>= putStr . show
+       -- render (1366 * 2, 768 * 2) (27.32, 15.36) 40 scene >>= putStr . show
 
 scene = Scene {
    world =   chessboardShaded Plane { origin = rotP (0, 0, -25)

@@ -19,12 +19,12 @@ maxRefraction = 5
 
 -- camera is fixed at (0, 0, d) and the screen is orthogonal to the camera and
 -- is a rectange centered in origin of size (a, b).
-render :: (Renderable a)
+render :: (Renderable a, Monad m)
        => ImageDefinition -> (Double, Double) -> Double
        -> Scene a
-       -> Image
+       -> m Image
 render (w, h) (a, b) d scene =
-  Image $ runIdentity $ A.computeP $ A.map (pointColor scene d 0 0) $
+  fmap Image $ A.computeP $ A.map (pointColor scene d 0 0) $
   A.fromFunction (A.Z A.:.h A.:.w) mkCoordinates
    where
      mkCoordinates :: A.DIM2 -> Ray
