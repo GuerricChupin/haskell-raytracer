@@ -25,14 +25,15 @@ render :: (Renderable a)
        -> Image
 render (w, h) (a, b) d scene =
   Image $ runIdentity $ A.computeP $ A.map (pointColor scene d 0 0) $
-  A.fromListUnboxed (A.Z A.:.h A.:.w) $
-      [(cameraPos, (x,y,0) .- cameraPos, 1) | y <- ordinates, x <- abscissas]
+  A.fromFunction (A.Z A.:.h A.:.w) mkCoordinates
    where
+     mkCoordinates :: A.DIM2 -> Ray
+     mkCoordinates (A.Z A.:.i A.:.j) =
+       (cameraPos,
+        (a * (-0.5 + (fromIntegral j) / fromIntegral w),
+         b * (-0.5 + (fromIntegral i) / fromIntegral h), 0) .- cameraPos,
+        1)
      cameraPos = (0, 0, d)
-     abscissas =
-       [a * (-0.5 + x / fromIntegral w) | x <- map fromIntegral [0..(w - 1)]]
-     ordinates =
-       [b * (-0.5 + y / fromIntegral h) | y <- map fromIntegral [(h - 1), (h - 2)..0]]
 
 -- Only the closest intersection to the screen is considered.
 pointColor :: (Renderable a)

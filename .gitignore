@@ -8,3 +8,8 @@
 *.png
 *.eventlog
 *.dyn_*
+.hpc/
+*.html
+dist/
+*.tix
+*.cmm
