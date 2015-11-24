@@ -17,10 +17,10 @@ main = render (1366, 768) (27.32, 15.36) 40 scene >>= putStr . show
        -- render (1366 * 2, 768 * 2) (27.32, 15.36) 40 scene >>= putStr . show
 
 scene = Scene {
-   world =   chessboardShaded Plane { origin = rotP (0, 0, -25)
-                                    , normal = rotV $ (0,0,1)
-                                    }
-                              (rotV (1, 0, -0.1)) 5 (Mat white 0 1 1) (Mat black 0 1 1)
+   world = chessboardShaded Plane { origin = rotP (0, 0, -25)
+                                  , normal = rotV $ (0,0,1)
+                                  }
+           (rotV (1, 0, -0.1)) 5 (Mat white 0 1 1) (Mat black 0 1 1)
          ||| biconvexLens o (0,0,1) 15 2 `uniform` Mat black 0.1 1.4 0
 
    , source = LightSource { direction = rotV (0,1,0) }

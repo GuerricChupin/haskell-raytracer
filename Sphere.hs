@@ -14,7 +14,6 @@ import Data.Maybe (isJust)
 epsilon :: Double
 epsilon = 1.0e-11
 
-
 data Sphere = Sphere { center  :: Point
                      , radius  :: Double
                      } deriving (Eq)
@@ -49,4 +48,12 @@ instance Intersectable Sphere where
             p = minimumBy (compare `on` (distance (origin ray))) inters
             o = origin ray
             rayEnters = (p .- center s) `dotProd` dir ray < epsilon
-
+   boundingBox s = BoundingBox { xmin = x - r
+                               , ymin = y - r
+                               , zmin = z - r
+                               , xmax = x + r
+                               , ymax = y + r
+                               , zmax = z + r
+                               }
+     where (x,y,z) = center s
+           r = radius s

@@ -1,3 +1,5 @@
+{-# LANGUAGE BangPatterns #-}
+
 module Render ( render
               ) where
 
@@ -11,7 +13,6 @@ import LightSource
 import Data.Maybe (isNothing, fromJust, isJust)
 import Material
 import qualified Data.Array.Repa as A
-import Data.Functor.Identity
 
 minExposure = 0.1
 maxReflection = 5
@@ -36,6 +37,7 @@ render (w, h) (a, b) d scene =
      cameraPos = (0, 0, d)
 
 -- Only the closest intersection to the screen is considered.
+
 pointColor :: (Renderable a)
            => Scene a -> Double -> Int -> Int -> Ray -> Color
 pointColor scene d acc acc' r

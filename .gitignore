@@ -14,3 +14,7 @@ dist/
 *.tix
 *.cmm
 *.bmp
+*.folded
+*.prof
+*.svg
+*.pl

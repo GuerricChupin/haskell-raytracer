@@ -13,9 +13,10 @@ import Geometry ( Point
                 )
 import qualified Geometry as G
 import Intersectable
+import Infinity
 
 epsilon :: Double
-epsilon = 1.0e-12
+epsilon = 1.0e-11
 
 data Plane = Plane { origin :: Point
                    , normal :: Vector
@@ -30,4 +31,6 @@ instance Intersectable Plane where
       | otherwise = Just $ (o .+ (t .* u), n, Leaving)
       where t = -((o .- p) `dotProd` n) / un
             un = u `dotProd` n
+   boundingBox _ =
+     BoundingBox infinity infinity infinity infinity infinity infinity
 

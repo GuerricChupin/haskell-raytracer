@@ -7,7 +7,8 @@ import Data.Function (on)
 
 data Intersection a b = Inter a b
 
-instance (Intersectable a, Intersectable b) => Intersectable (Intersection a b) where
+instance (Intersectable a, Intersectable b) =>
+         Intersectable (Intersection a b) where
    contains (Inter a b) p = contains a p && contains b p
    firstIntersection r int@(Inter a b) =
      case (firstIntersection r a, firstIntersection r b) of
@@ -22,4 +23,4 @@ instance (Intersectable a, Intersectable b) => Intersectable (Intersection a b) 
          _  -> if a `contains` p'
                then i'
                else firstIntersection (p', dir r, refr r) int
-
+   boundingBox (Inter a b) = bimapBB max min (boundingBox a) (boundingBox b)
