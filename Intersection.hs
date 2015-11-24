@@ -10,7 +10,7 @@ data Intersection a b = Inter a b
 instance (Intersectable a, Intersectable b) =>
          Intersectable (Intersection a b) where
    contains (Inter a b) p = contains a p && contains b p
-   firstIntersection r int@(Inter a b) =
+   costlyFirstIntersection r int@(Inter a b) =
      case (firstIntersection r a, firstIntersection r b) of
       (Nothing, Nothing) -> Nothing
       (Nothing, m'@(Just (p,_,_))) -> if a `contains` p then m' else Nothing

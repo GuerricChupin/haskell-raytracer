@@ -51,3 +51,7 @@ instance (I.Intersectable o, Shader s) => Renderable (ShadedObject o s) where
                     then refract mat
                     else outerRefr
 
+instance (I.Intersectable o) => I.Intersectable (ShadedObject o s) where
+   I.contains r (Shaded o _) = I.contains r o
+   I.costlyFirstIntersection r (Shaded o _) = I.costlyFirstIntersection r o
+

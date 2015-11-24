@@ -21,4 +21,6 @@ data IntersectInfo = IntersectInfo { point :: Point
                                    } deriving (Show)
 
 class Renderable a where
+   -- | Calculates ray/object intersection and return intersection info, with
+   -- bounding box optimization.
    firstIntersection :: Ray -> a -> Maybe IntersectInfo

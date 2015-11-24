@@ -36,7 +36,7 @@ sphereIntersect ((a,b,c),(x,y,z),_)
 instance Intersectable Sphere where
    hit r s = isJust $ firstIntersection r s
    contains s p = distance p (center s) < radius s - epsilon
-   firstIntersection ray s
+   costlyFirstIntersection ray s
       | null inters = Nothing
       | otherwise   = Just $ ( p
                              , p .- center s
