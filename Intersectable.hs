@@ -40,15 +40,15 @@ intersectBB ((xo, yo, zo), (x, y, z), _) (BoundingBox a b c d e f) =
   then let xint = xo + k * x
            yint = yo + k * y
            k = (e - zo)/z in
-       a <= xint && xint <= b && c <= yint && yint <= d
+       a <= xint && xint <= d && b <= yint && yint <= e
   else
     if y /= 0
     then let xint = xo + k * x
              k = (c - yo)/y in
-         a <= xint && xint <= b && e <= zo && zo <= f
+         a <= xint && xint <= d && c <= zo && zo <= f
     else
       if x /= 0
-      then c <= yo && yo <= d && e <= zo && zo <= f
+      then b <= yo && yo <= e && c <= zo && zo <= f
       else False
               
 class Intersectable a where
