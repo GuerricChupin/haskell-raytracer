@@ -5,7 +5,7 @@ module Plane ( Plane (Plane)
 
 import Geometry ( Point
                 , Vector
-                , Ray (..)
+                , Ray
                 , dotProd
                 , (.+)
                 , (.-)

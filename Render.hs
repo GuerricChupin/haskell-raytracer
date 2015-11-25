@@ -50,7 +50,6 @@ pointColor scene d acc acc' r
       fromJust hit
     n = normalise n'
     lightDir = normalise $ direction (source scene)
-    cameraPos = (0, 0, d)
     op = opacity mat
     lightRay = (p, lightDir, 1)
     -- natural object color calculation and shadowing
