@@ -14,7 +14,7 @@ l \\\ r = Diff l r
 instance (Intersectable l, Intersectable r)
        => Intersectable (Difference l r) where
    contains (Diff l r) p = not (r `contains` p) && l `contains` p
-   costlyFirstIntersection ray d@(Diff l r)
+   getFirstIntersection ray d@(Diff l r)
       | isNothing hit  = Nothing
       | r `contains` p = firstIntersection (ray { origin = p }) d
       | otherwise      = hit
