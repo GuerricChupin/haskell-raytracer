@@ -23,12 +23,13 @@ scene = Scene {
            (rotV (1, 0, -0.1)) 5 (Mat white 0 1 1) (Mat black 0 1 1)
          ||| biconvexLens o (0,0,1) 15 2 `uniform` Mat black 0.1 1.4 0
 
-   , source = LightSource { direction = rotV (0,1,0) }
+   , source = LightSource { direction = rotV (0,0,1) }
    }
 
 r = 25.25
 o = (0, 2, -10)
-angle = pi / 12
-rotV = G.rotateVect (1, 0, 0) angle
-rotP = G.rotatePt (0, 0, -10) (1, 0, 0) angle
+angle = pi / 4
+axis = (1, 0, 0)
+rotV = G.rotateVect axis angle
+rotP = G.rotatePt o axis angle
 
