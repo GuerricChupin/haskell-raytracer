@@ -18,12 +18,12 @@ maxRefraction = 5
 
 -- camera is fixed at (0, 0, d) and the screen is orthogonal to the camera and
 -- is a rectange centered in origin of size (a, b).
-render :: (Renderable a, Monad m)
+render :: (Monad m)
        => ImageDefinition -> (Double, Double) -> Double
-       -> Scene a
+       -> Scene
        -> m Image
 render (w, h) (a, b) d scene =
-  fmap Image $ A.computeP $ A.map (pointColor scene d 0 0) $
+  fmap Image $ A.computeP $ A.map (pointColor scene 0 0) $
   A.fromFunction (A.Z A.:.h A.:.w) mkCoordinates
    where
      mkCoordinates :: A.DIM2 -> Ray
@@ -35,26 +35,23 @@ render (w, h) (a, b) d scene =
      cameraPos = (0, 0, d)
 
 -- Only the closest intersection to the screen is considered.
-
-pointColor :: (Renderable a)
-           => Scene a -> Double -> Int -> Int -> Ray -> Color
-pointColor scene d acc acc' r
+pointColor :: Scene -> Int -> Int -> Ray -> Color
+pointColor scene acc acc' r
   | acc >= maxReflection
     || acc' >= maxRefraction
     || isNothing hit = black
   | otherwise = objResult .+ reflResult .+ refrResult .+ reflRefrResult
   where
     -- minimum informations
-    hit = firstIntersection r (world scene)
+    hit = firstIntersection r scene
     IntersectInfo {point = p, normal = n', localMat = mat, n2 = n2} =
       fromJust hit
     n = normalise n'
     lightDir = normalise $ direction (source scene)
-    cameraPos = (0, 0, d)
     op = opacity mat
     lightRay = (p, lightDir, 1)
     -- natural object color calculation and shadowing
-    shadow = isJust $ firstIntersection lightRay $ world scene
+    shadow = isJust $ firstIntersection lightRay $ scene
     realExposure =
       if shadow
       then 0
@@ -64,10 +61,10 @@ pointColor scene d acc acc' r
       | otherwise =
           darken (op  * (1 -reflFactor) * max minExposure realExposure)
                  (color mat)
-    -- reflection 
+    -- reflection
     reflFactor = reflect mat
     reflRay = (p, neg (dir r `sym` n), n1)
-    reflColor = pointColor scene d (acc + 1) acc' reflRay
+    reflColor = pointColor scene (acc + 1) acc' reflRay
     reflResult
       | reflFactor == 0 = black
       | otherwise = darken reflFactor reflColor
@@ -81,7 +78,7 @@ pointColor scene d acc acc' r
     rCos = sqrt $ 1 - rSin^2
     reflCoef
       | totRefl = 1
-      | n1 <= n2 = ro + (1-ro) * (1-iCos)^5 
+      | n1 <= n2 = ro + (1-ro) * (1-iCos)^5
       | otherwise = ro + (1-ro) * (1-rCos)^5
       where ro = ((n1 - n2)/(n1 + n2))^2
     transCoef = 1 - reflCoef
@@ -92,7 +89,7 @@ pointColor scene d acc acc' r
       where realNormal = if dir r `dotProd` n < 0 then n else neg n
             iN = norm (dir r)
     refrRay = (p, refrDir, n2)
-    refrColor = pointColor scene d acc (acc' + 1) refrRay
+    refrColor = pointColor scene acc (acc' + 1) refrRay
     refrResult
       | totRefl || op == 1 || transCoef == 0 = black
       | otherwise =  darken ((1 - op) * transCoef * (1-reflFactor)) refrColor
