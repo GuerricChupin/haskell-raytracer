@@ -18,11 +18,10 @@ main = render (1366, 768) (27.32, 15.36) 40 scene >>= putStr . show
 
 scene = mkScene
    LightSource { direction = (1,1,1) }
-   {-
-   [Object $ Sphere (G.rotatePt (0,0,0) (0,0,1) (i/n*2*pi) (0,0,2)) 2
-      `uniform` anyMat | i <- [1..n] ]
-   -}
-   [Object $ Sphere o 10 `uniform` Mat white 0 1 1 ]
+   
+   ([Object $ Sphere (G.rotatePt (0,0,-10) (0,1,0) (i/n*2*pi) (0,0,-1)) 0.5
+      `uniform` Mat (28,133,150) 0 1 1 | i <- [1..n] ] ++
+   [Object $ Sphere o 5 `uniform` Mat (20,51,85) 0 1 1 ])
 
 o = (0,0,-10)
 n = 50
