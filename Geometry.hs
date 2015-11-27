@@ -21,6 +21,8 @@ module Geometry ( Point
                 , rotatePt
                 , rayPlaneIntersection
                 , epsilon
+                , Axis (..)
+                , axisOrientedPlaneHit
                 ) where
 
 type Point = (Double, Double, Double)
@@ -99,4 +101,17 @@ rayPlaneIntersection (o, u, _) p n
    | otherwise = Just $ o .+ (t .* u)
    where t = -((o .- p) `dotProd` n) / un
          un = u `dotProd` n
+
+data Axis = XAxis | YAxis | ZAxis
+
+axisOrientedPlaneHit :: Ray -> Point -> Axis -> Maybe Point
+axisOrientedPlaneHit (o@(xo,_,_), d@(xd,_,_), _) (x,_,_) XAxis
+   | xd * (x-xo) > 0 = Just $ o .+ (((x - xo)/xd) .* d)
+   | otherwise  = Nothing
+axisOrientedPlaneHit (o@(_,yo,_), d@(_,yd,_), _) (_,y,_) YAxis
+   | yd * (y-yo) > 0 = Just $ o .+ (((y - yo)/yd) .* d)
+   | otherwise  = Nothing
+axisOrientedPlaneHit (o@(_,_,zo), d@(_,_,zd), _) (_,_,z) ZAxis
+   | zd * (z-zo) > 0 = Just $ o .+ (((z - zo)/zd) .* d)
+   | otherwise  = Nothing
 

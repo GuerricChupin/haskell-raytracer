@@ -2,7 +2,7 @@ module Sphere ( Sphere (Sphere)
               , center
               , radius
               , sphereIntersect
-              ) where 
+              ) where
 
 import Intersectable
 import Geometry
