@@ -10,11 +10,9 @@ module Intersectable ( Intersectable
                      , intersectBB
                      ) where
 
-import Geometry (Point, Vector, Ray)
+import Geometry
 
-import Data.Maybe (isJust)
-
-import Debug.Trace
+import Data.Maybe (isJust, fromJust)
 
 -- whether a ray enters or leave a solid at an intersection point.
 -- for non-closed objects (e.g. a plane), rays should always be Leaving.
@@ -35,22 +33,26 @@ bimapBB x y (BoundingBox a b c d e f) (BoundingBox g h i j k l) =
   BoundingBox (x a g) (x b h) (x c i) (y d j) (y e k) (y f l)
 
 intersectBB :: Ray -> BoundingBox -> Bool
-intersectBB ((xo, yo, zo), (x, y, z), _) (BoundingBox a b c d e f) =
-  if z /= 0
-  then let xint = xo + k * x
-           yint = yo + k * y
-           k = (e - zo)/z in
-       a <= xint && xint <= d && b <= yint && yint <= e
-  else
-    if y /= 0
-    then let xint = xo + k * x
-             k = (c - yo)/y in
-         a <= xint && xint <= d && c <= zo && zo <= f
-    else
-      if x /= 0
-      then b <= yo && yo <= e && c <= zo && zo <= f
-      else False
-              
+intersectBB r (BoundingBox a b c d e f) =
+      (isJust mzmin && a <= zminx && zminx <= d && b <= zminy && zminy <= e)
+   || (isJust mymin && a <= yminx && yminx <= d && c <= yminz && yminz <= f)
+   || (isJust mxmin && b <= xminy && xminy <= e && c <= xminz && xminz <= f)
+   || (isJust mzmax && a <= zmaxx && zmaxx <= d && b <= zmaxy && zmaxy <= e)
+   || (isJust mymax && a <= ymaxx && ymaxx <= d && c <= ymaxz && ymaxz <= f)
+   || (isJust mxmax && b <= xmaxy && xmaxy <= e && c <= xmaxz && xmaxz <= f)
+   where mzmin = axisOrientedPlaneHit r (a,b,c) ZAxis
+         (zminx, zminy, _) = fromJust mzmin
+         mymin = axisOrientedPlaneHit r (a,b,c) YAxis
+         (yminx, _, yminz) = fromJust mymin
+         mxmin = axisOrientedPlaneHit r (a,b,c) XAxis
+         (_, xminy, xminz) = fromJust mxmin
+         mzmax = axisOrientedPlaneHit r (d,e,f) ZAxis
+         (zmaxx, zmaxy, _) = fromJust mzmax
+         mymax = axisOrientedPlaneHit r (d,e,f) YAxis
+         (ymaxx, _, ymaxz) = fromJust mymax
+         mxmax = axisOrientedPlaneHit r (d,e,f) XAxis
+         (_, xmaxy, xmaxz) = fromJust mxmax
+
 class Intersectable a where
    hit :: Ray -> a -> Bool
    hit r obj = isJust $ firstIntersection r obj
@@ -63,7 +65,7 @@ class Intersectable a where
    boundingBox :: a -> BoundingBox
 
 firstIntersection :: (Intersectable a)
-                     => Ray -> a -> Maybe (Point, Vector, Direction)
+                  => Ray -> a -> Maybe (Point, Vector, Direction)
 firstIntersection r x
    | intersectBB r (boundingBox x) = getFirstIntersection r x
    | otherwise                     = Nothing

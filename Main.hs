@@ -12,24 +12,29 @@ import Color (black, white)
 import Intersection
 import BiconvexLens
 import Image
+import System.Random
 
 main = render (1366, 768) (27.32, 15.36) 40 scene >>= putStr . show
        -- render (1366 * 2, 768 * 2) (27.32, 15.36) 40 scene >>= putStr . show
 
-scene = Scene {
-   world = chessboardShaded Plane { origin = rotP (0, 0, -25)
-                                  , normal = rotV $ (0,0,1)
-                                  }
-           (rotV (1, 0, -0.1)) 5 (Mat white 0 1 1) (Mat black 0 1 1)
-         ||| biconvexLens o (0,0,1) 15 2 `uniform` Mat black 0.1 1.4 0
+n = 500
 
-   , source = LightSource { direction = rotV (0,0,1) }
-   }
+spheres :: [Object]
+spheres = [Object $ Sphere (x,y,z) 0.5 `uniform` Mat (28,133,150) 0 1 1
+          | (x,y,z) <- take n . group 3 $
+                       randomRs (-28,28) (mkStdGen 42) ]
+   where toTuple [x,y,z] = (x,y,z)
 
-r = 25.25
-o = (0, 2, -10)
-angle = pi / 4
-axis = (1, 0, 0)
-rotV = G.rotateVect axis angle
-rotP = G.rotatePt o axis angle
+scene = mkScene
+   LightSource { direction = (1,1,1) }
+   spheres
+   {-
+   ([Object $ Sphere (G.rotatePt (0,0,-10) (0,1,0) (i/n*2*pi) (0,0,-1)) 0.5
+      `uniform` Mat (28,133,150) 0 1 1 | i <- [1..n] ] ++
+   [Object $ Sphere o 5 `uniform` Mat (20,51,85) 0 1 1 ])
+   -}
+
+group :: Int -> [a] -> [(a,a,a)]
+group n [] = []
+group n (x:y:z:xs) = (x,y,z) : group n xs
 

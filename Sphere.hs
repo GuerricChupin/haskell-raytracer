@@ -2,7 +2,7 @@ module Sphere ( Sphere (Sphere)
               , center
               , radius
               , sphereIntersect
-              ) where 
+              ) where
 
 import Intersectable
 import Geometry
@@ -10,9 +10,6 @@ import Data.List ( minimumBy
                  )
 import Data.Function (on)
 import Data.Maybe (isJust)
-
-epsilon :: Double
-epsilon = 1.0e-11
 
 data Sphere = Sphere { center  :: Point
                      , radius  :: Double
