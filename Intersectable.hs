@@ -10,11 +10,9 @@ module Intersectable ( Intersectable
                      , intersectBB
                      ) where
 
-import Geometry (Point, Vector, Ray)
+import Geometry (Point, Vector, Ray, rayPlaneIntersection)
 
 import Data.Maybe (isJust)
-
-import Debug.Trace
 
 -- whether a ray enters or leave a solid at an intersection point.
 -- for non-closed objects (e.g. a plane), rays should always be Leaving.
@@ -35,22 +33,16 @@ bimapBB x y (BoundingBox a b c d e f) (BoundingBox g h i j k l) =
   BoundingBox (x a g) (x b h) (x c i) (y d j) (y e k) (y f l)
 
 intersectBB :: Ray -> BoundingBox -> Bool
-intersectBB ((xo, yo, zo), (x, y, z), _) (BoundingBox a b c d e f) =
-  if z /= 0
-  then let xint = xo + k * x
-           yint = yo + k * y
-           k = (e - zo)/z in
-       a <= xint && xint <= d && b <= yint && yint <= e
-  else
-    if y /= 0
-    then let xint = xo + k * x
-             k = (c - yo)/y in
-         a <= xint && xint <= d && c <= zo && zo <= f
-    else
-      if x /= 0
-      then b <= yo && yo <= e && c <= zo && zo <= f
-      else False
-              
+intersectBB r (BoundingBox a b c d e f) =
+   any (maybe False within) inters
+   where
+   inters = do
+      orig <- [(a,b,c), (d,e,f)]
+      n <- [(1,0,0), (0,1,0), (0,0,1)]
+      return $ rayPlaneIntersection r orig n
+   within (x,y,z) =
+      a <= x && x <= d && b <= y && y <= e && c <= z && z <= f
+
 class Intersectable a where
    hit :: Ray -> a -> Bool
    hit r obj = isJust $ firstIntersection r obj

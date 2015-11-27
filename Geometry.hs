@@ -1,7 +1,5 @@
 {-# LANGUAGE MultiParamTypeClasses, TemplateHaskell, TypeFamilies, FlexibleInstances #-}
 
-
-
 module Geometry ( Point
                 , Vector
                 , Ray
@@ -21,6 +19,8 @@ module Geometry ( Point
                 , sym
                 , rotateVect
                 , rotatePt
+                , rayPlaneIntersection
+                , epsilon
                 ) where
 
 type Point = (Double, Double, Double)
@@ -87,4 +87,16 @@ rotateVect axis angle u = axisProj .+ rotOrthProj
 
 rotatePt :: Point -> Vector -> Double -> Point -> Point
 rotatePt origin axis angle = (origin .+) . (rotateVect axis angle) . (.- origin)
+
+epsilon :: Double
+epsilon = 1.0e-11
+
+-- | Returns the intersection (if any) between a ray and a plane. If the ray
+-- origin is on the plane (with precision 'epsilon'), then returns 'Nothing'.
+rayPlaneIntersection :: Ray -> Point -> Vector -> Maybe Point
+rayPlaneIntersection (o, u, _) p n
+   | t < epsilon || un == 0 = Nothing
+   | otherwise = Just $ o .+ (t .* u)
+   where t = -((o .- p) `dotProd` n) / un
+         un = u `dotProd` n
 

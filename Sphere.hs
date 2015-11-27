@@ -11,9 +11,6 @@ import Data.List ( minimumBy
 import Data.Function (on)
 import Data.Maybe (isJust)
 
-epsilon :: Double
-epsilon = 1.0e-11
-
 data Sphere = Sphere { center  :: Point
                      , radius  :: Double
                      } deriving (Eq)

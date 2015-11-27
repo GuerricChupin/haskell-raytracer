@@ -15,9 +15,6 @@ import qualified Geometry as G
 import Intersectable
 import Infinity
 
-epsilon :: Double
-epsilon = 1.0e-11
-
 data Plane = Plane { origin :: Point
                    , normal :: Vector
                    }
@@ -26,11 +23,8 @@ instance Intersectable Plane where
    hit (o, u, _) (Plane p n) =
       ((o .- p) `dotProd` n) * (u `dotProd` n) < 0
    contains _ _ = False
-   getFirstIntersection (o, u, _) (Plane p n)
-      | t < epsilon || un == 0 = Nothing
-      | otherwise = Just $ (o .+ (t .* u), n, Leaving)
-      where t = -((o .- p) `dotProd` n) / un
-            un = u `dotProd` n
+   getFirstIntersection r (Plane p n) =
+      fmap (\i -> (i, n, Leaving)) $ G.rayPlaneIntersection r p n
    boundingBox _ =
      BoundingBox (-infinity) (-infinity) (-infinity)
                   infinity infinity infinity

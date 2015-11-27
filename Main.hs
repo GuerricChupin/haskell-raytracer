@@ -17,12 +17,20 @@ main = render (1366, 768) (27.32, 15.36) 40 scene >>= putStr . show
        -- render (1366 * 2, 768 * 2) (27.32, 15.36) 40 scene >>= putStr . show
 
 scene = mkScene
-   LightSource { direction = (1,1,1) }
+   LightSource { direction = (1,1,1) } (
    {-
-   [Object $ Sphere (G.rotatePt (0,0,0) (0,0,1) (i/n*2*pi) (0,0,2)) 2
-      `uniform` anyMat | i <- [1..n] ]
+   [Object $ Sphere (G.rotatePt (0,0,0) (0,0,1) (i/n*2*pi) (0,2,0)) 0.5
+      `uniform` Mat white 0 1 1 | i <- [1..n] ] ++
+   [ Object $ chessboardShaded (Plane { origin = (0,2.75,0)
+                                      , normal = (0,1,0) })
+              (1,0,0.3) 2 (Mat white 0 1 1) (Mat black 0 1 1)
+   ]
    -}
+   [Object $ Sphere (0,5,0) 0.5 `uniform` Mat (255, 0, 0) 0 1 1]
+   )
+   {-
    [Object $ Sphere o 10 `uniform` Mat white 0 1 1 ]
+   -}
 
 o = (0,0,-10)
 n = 50
