@@ -33,7 +33,7 @@ sphereIntersect ((a,b,c),(x,y,z),_)
 instance Intersectable Sphere where
    hit r s = isJust $ firstIntersection r s
    contains s p = distance p (center s) < radius s - epsilon
-   getFirstIntersection ray s
+   firstIntersection ray s
       | null inters = Nothing
       | otherwise   = Just $ ( p
                              , p .- center s
@@ -45,12 +45,3 @@ instance Intersectable Sphere where
             p = minimumBy (compare `on` (distance (origin ray))) inters
             o = origin ray
             rayEnters = (p .- center s) `dotProd` dir ray < epsilon
-   boundingBox s = BoundingBox { xmin = x - r
-                               , ymin = y - r
-                               , zmin = z - r
-                               , xmax = x + r
-                               , ymax = y + r
-                               , zmax = z + r
-                               }
-     where (x,y,z) = center s
-           r = radius s

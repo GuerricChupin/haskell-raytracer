@@ -53,6 +53,4 @@ instance (I.Intersectable o, Shader s) => Renderable (ShadedObject o s) where
 
 instance (I.Intersectable o) => I.Intersectable (ShadedObject o s) where
    contains (Shaded o _) p = I.contains o p
-   getFirstIntersection r (Shaded o _) = I.getFirstIntersection r o
-   boundingBox (Shaded o _) = I.boundingBox o
-
+   firstIntersection r (Shaded o _) = I.firstIntersection r o

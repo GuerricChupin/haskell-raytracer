@@ -10,7 +10,7 @@ data Intersection a b = Inter a b
 instance (Intersectable a, Intersectable b) =>
          Intersectable (Intersection a b) where
    contains (Inter a b) p = contains a p && contains b p
-   getFirstIntersection r int@(Inter a b) =
+   firstIntersection r int@(Inter a b) =
      case (firstIntersection r a, firstIntersection r b) of
       (Nothing, Nothing) -> Nothing
       (Nothing, m'@(Just (p,_,_))) -> if a `contains` p then m' else Nothing
@@ -23,4 +23,3 @@ instance (Intersectable a, Intersectable b) =>
          _  -> if a `contains` p'
                then i'
                else firstIntersection (p', dir r, refr r) int
-   boundingBox (Inter a b) = bimapBB max min (boundingBox a) (boundingBox b)
