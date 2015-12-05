@@ -1,5 +1,4 @@
 module Image ( Image (Image)
-             , ImageDefinition
              ) where
 
 import qualified Data.Array.Repa as A
