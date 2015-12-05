@@ -8,8 +8,10 @@ import Color
 import Geometry
 import Renderable
 import LightSource
-import Data.Maybe (isNothing, fromJust, isJust)
 import Material
+import Camera
+
+import Data.Maybe (isNothing, fromJust, isJust)
 import qualified Data.Array.Repa as A
 
 minExposure = 0.1
@@ -19,12 +21,12 @@ maxRefraction = 5
 -- camera is fixed at (0, 0, d) and the screen is orthogonal to the camera and
 -- is a rectange centered in origin of size (a, b).
 render :: (Monad m)
-       => ImageDefinition -> (Double, Double) -> Double
+       => ImageDefinition -> (Double, Double) -> Camera
        -> Scene
        -> m Image
-render (w, h) (a, b) d scene =
-  fmap Image $ A.computeP $ A.map (pointColor scene 0 0) $
-  A.fromFunction (A.Z A.:.h A.:.w) mkCoordinates
+render (w, h) (a, b) (Camera _ _ d) scene =
+  Image <$> (A.computeP $ A.map (pointColor scene 0 0) $
+  A.fromFunction (A.Z A.:.h A.:.w) mkCoordinates)
    where
      mkCoordinates :: A.DIM2 -> Ray
      mkCoordinates (A.Z A.:.i A.:.j) =

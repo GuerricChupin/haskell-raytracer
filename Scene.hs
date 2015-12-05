@@ -34,4 +34,3 @@ instance Renderable Scene where
 
 mkScene :: LightSource -> [Object] -> Scene
 mkScene ls w = Scene { source = ls, world = w }
-
