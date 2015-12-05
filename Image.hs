@@ -20,7 +20,3 @@ instance Show Image where
             shm = A.extent m
             toLists [] = []
             toLists x = (take (col shm) x):(toLists $ drop (col shm) x)
-
--- (width, height) in pixels
-type ImageDefinition = (Int, Int)
-
