@@ -21,20 +21,26 @@ maxRefraction = 5
 -- camera is fixed at (0, 0, d) and the screen is orthogonal to the camera and
 -- is a rectange centered in origin of size (a, b).
 render :: (Monad m)
-       => ImageDefinition -> (Double, Double) -> Camera
+       => ImageDefinition -> Camera
        -> Scene
        -> m Image
-render (w, h) (a, b) (Camera _ _ d) scene =
+render (w, h) (Camera c o f (wo, ho) d) scene =
   Image <$> (A.computeP $ A.map (pointColor scene 0 0) $
   A.fromFunction (A.Z A.:.h A.:.w) mkCoordinates)
    where
      mkCoordinates :: A.DIM2 -> Ray
      mkCoordinates (A.Z A.:.i A.:.j) =
-       (cameraPos,
-        (a * (-0.5 + (fromIntegral j) / fromIntegral w),
-         b * (-0.5 + (fromIntegral i) / fromIntegral h), 0) .- cameraPos,
-        1)
-     cameraPos = (0, 0, d)
+       (c .- (d .* no)
+       , ((d * tan (2*(-0.5 + fromIntegral i / fromIntegral w) / wo)) .* x)
+         .+ ((d * tan (2*(-0.5 + fromIntegral j / fromIntegral w) / ho)) .* y)
+         .- c
+       , 1
+       )
+     no = normalise o
+     x = rotatePt c (0,0,1) dxo $ c .+ (1,0,0)
+     y = rotatePt c (1,0,0) dyo $ c .+ (0,1,0)
+     dxo = acos $ (no .- (0,1,0)) `dotProd` (1,0,0)
+     dyo = acos $ (no .- (1,0,0)) `dotProd` (1,0,0)
 
 -- Only the closest intersection to the screen is considered.
 pointColor :: Scene -> Int -> Int -> Ray -> Color

@@ -7,11 +7,15 @@ import Shading
 import Geometry ((.+), (.-))
 import qualified Geometry as G
 import System.Random
+import Camera
 
-main = render (1366, 768) (27.32, 15.36) 40 scene >>= putStr . show
+main = render (1366, 768) camera scene >>= putStr . show
        -- render (1366 * 2, 768 * 2) (27.32, 15.36) 40 scene >>= putStr . show
 
 n = 500
+
+camera :: Camera
+camera = Camera (0,0,0) (0,0,1) 0 (pi/4, pi/8) 40
 
 spheres :: [Object]
 spheres = [Object $ Sphere (x,y,z) 0.5 `uniform` Mat (28,133,150) 0 1 1
