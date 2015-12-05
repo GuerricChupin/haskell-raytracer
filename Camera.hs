@@ -17,4 +17,6 @@ fixedAspectRatio d c@Camera { resolution = (w, h) } =
   c { openings = (d, (ar * d)) }
   where
     -- I have no idea why this fraction is not the other way roud.
-    ar = fromIntegral w / fromIntegral h
+    -- Ok, got it, that's because there was a much bigger mistake
+    -- somewhere else.
+    ar = fromIntegral h / fromIntegral w
