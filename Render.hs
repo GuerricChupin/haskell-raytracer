@@ -35,14 +35,14 @@ render (Camera (w, h) c o f (wo, ho) d) scene =
        (cameraOrigin
        , d
        .* (((tan $ (-0.5 + fromIntegral j / fromIntegral w) * wo) .* x)
-       .+  ((tan $ (-0.5 + fromIntegral i / fromIntegral h) * ho) .* y))
+       .+  ((tan $ (0.5 - fromIntegral i / fromIntegral h) * ho) .* y))
        .+ (d .* no)
        , 1
        )
      no@(nox, noy, noz) = normalise o
      cameraOrigin = c .- (d .* no)
-     x = normalise $ (rotateVect (0,0,1) dxo (1,0,0))
-     y = normalise $ (rotateVect (1,0,0) dyo (0,1,0))
+     x = normalise $ (rotateVect (0,0,1) 0 (1,0,0))
+     y = normalise $ (rotateVect (1,0,0) 0 (0,1,0))
      dxo = acos $ (no .- (0, noy, 0)) `dotProd` (0,0,1)
      dyo = acos $ (no .- (nox, 0, 0)) `dotProd` (0,0,1)
 
