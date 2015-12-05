@@ -23,6 +23,7 @@ module Geometry ( Point
                 , epsilon
                 , Axis (..)
                 , axisOrientedPlaneHit
+                , nullVector
                 ) where
 
 type Point = (Double, Double, Double)
@@ -115,3 +116,5 @@ axisOrientedPlaneHit (o@(_,_,zo), d@(_,_,zd), _) (_,_,z) ZAxis
    | zd * (z-zo) > 0 = Just $ o .+ (((z - zo)/zd) .* d)
    | otherwise  = Nothing
 
+nullVector :: (Num a, Num b, Num c) => (a,b,c)
+nullVector = (0,0,0)

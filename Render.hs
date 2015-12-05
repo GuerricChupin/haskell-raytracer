@@ -41,10 +41,16 @@ render (Camera (w, h) c o f (wo, ho) d) scene =
        )
      no@(nox, noy, noz) = normalise o
      cameraOrigin = c .- (d .* no)
-     x = normalise $ (rotateVect (0,0,1) 0 (1,0,0))
-     y = normalise $ (rotateVect (1,0,0) 0 (0,1,0))
-     dxo = acos $ (no .- (0, noy, 0)) `dotProd` (0,0,1)
-     dyo = acos $ (no .- (nox, 0, 0)) `dotProd` (0,0,1)
+     x = normalise $ (rotateVect (0,0,1) dxo (1,0,0))
+     y = normalise $ (rotateVect x dyo (0,1,0))
+     dxo = acos $ let n = no .- (0, noy, 0) in
+       if n == nullVector
+       then 1
+       else normalise n `dotProd` (0,0,1)
+     dyo = acos $ let n = no .- (nox, 0, 0) in
+       if n == nullVector
+       then 1
+       else normalise n `dotProd` (0,0,1)
 
 -- Only the closest intersection to the screen is considered.
 pointColor :: Scene -> Int -> Int -> Ray -> Color
