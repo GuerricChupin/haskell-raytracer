@@ -12,19 +12,24 @@ import Color (black, white)
 import Intersection
 import BiconvexLens
 import Image
+import Camera
 
-main = render (1366, 768) (27.32, 15.36) 40 scene >>= putStr . show
+main = render camera scene >>= putStr . show
        -- render (1366 * 2, 768 * 2) (27.32, 15.36) 40 scene >>= putStr . show
 
+camera :: Camera
+camera =
+  fixedAspectRatio (pi/4) $ Camera (1366, 768) (0,0,0) (0,0,-1) 0 (0,0) 10
+
 spheres :: [Object]
-spheres =    [Object $ Sphere (rotP (0,0,-15)) 3 `uniform` Mat (255,0,0) 0.1 1.4 0.5]
-          ++ [Object $ Sphere (rotP (-5,0,-20)) 3 `uniform` Mat (0,255,0) 0.1 1.4 0.5]
-          ++ [Object $ Sphere (rotP (7,0,-18)) 3 `uniform` Mat (0,0,255) 0.1 1.4 0.5]
-          ++ [Object $ chessboardShaded (Plane (rotP (0,3,0)) (rotV (0,1,0))) (1,0,0) 3
+spheres =    [Object $ Sphere (0,0,-15) 3 `uniform` Mat (255,0,0) 0.1 1.4 0.5]
+          ++ [Object $ Sphere (-5,0,-20) 3 `uniform` Mat (0,255,0) 0.1 1.4 0.5]
+          ++ [Object $ Sphere (7,0,-18) 3 `uniform` Mat (0,0,255) 0.1 1.4 0.5]
+          ++ [Object $ chessboardShaded (Plane (0,-3,0) (0,1,0)) (1,0,0) 3
                        (Mat (255,255,255) 0.5 1 1)
                        (Mat (0,0,0) 0.5 1 1)]
 scene = mkScene
-   LightSource { direction = rotV (1,1,1) }
+   LightSource { direction = (1,1,-1) }
    spheres
 
 rotV = G.rotateVect (1,0,0) (-pi/12)

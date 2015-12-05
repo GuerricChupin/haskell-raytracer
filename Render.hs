@@ -14,6 +14,8 @@ import Camera
 import Data.Maybe (isNothing, fromJust, isJust)
 import qualified Data.Array.Repa as A
 
+import Debug.Trace
+
 minExposure = 0.1
 maxReflection = 5
 maxRefraction = 5
@@ -21,26 +23,27 @@ maxRefraction = 5
 -- camera is fixed at (0, 0, d) and the screen is orthogonal to the camera and
 -- is a rectange centered in origin of size (a, b).
 render :: (Monad m)
-       => ImageDefinition -> Camera
+       => Camera
        -> Scene
        -> m Image
-render (w, h) (Camera c o f (wo, ho) d) scene =
+render (Camera (w, h) c o f (wo, ho) d) scene =
   Image <$> (A.computeP $ A.map (pointColor scene 0 0) $
-  A.fromFunction (A.Z A.:.h A.:.w) mkCoordinates)
+  A.fromFunction (A.Z A.:.h A.:.w) mkRays)
    where
-     mkCoordinates :: A.DIM2 -> Ray
-     mkCoordinates (A.Z A.:.i A.:.j) =
-       (c .- (d .* no)
-       , ((d * tan (2*(-0.5 + fromIntegral i / fromIntegral w) / wo)) .* x)
-         .+ ((d * tan (2*(-0.5 + fromIntegral j / fromIntegral w) / ho)) .* y)
-         .- c
+     mkRays :: A.DIM2 -> Ray
+     mkRays (A.Z A.:.i A.:.j) =
+       (cameraOrigin
+       , ((d * tan ((-0.5 + 1 * fromIntegral j / fromIntegral w) / wo)) .* x)
+         .+ ((d * tan ((-0.5 + 1 * fromIntegral i / fromIntegral h) / ho)) .* y)
+         .- cameraOrigin
        , 1
        )
-     no = normalise o
+     cameraOrigin = c .- (d .* no)
+     no@(nox, noy, noz) = normalise o
      x = rotatePt c (0,0,1) dxo $ c .+ (1,0,0)
      y = rotatePt c (1,0,0) dyo $ c .+ (0,1,0)
-     dxo = acos $ (no .- (0,1,0)) `dotProd` (1,0,0)
-     dyo = acos $ (no .- (1,0,0)) `dotProd` (1,0,0)
+     dxo = acos $ (no .- (0, noy, 0)) `dotProd` (0,0,1)
+     dyo = acos $ (no .- (nox, 0, 0)) `dotProd` (0,0,1)
 
 -- Only the closest intersection to the screen is considered.
 pointColor :: Scene -> Int -> Int -> Ray -> Color

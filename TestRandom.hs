@@ -15,7 +15,7 @@ main = render (1366, 768) camera scene >>= putStr . show
 n = 500
 
 camera :: Camera
-camera = Camera (0,0,0) (0,0,1) 0 (pi/4, pi/8) 40
+camera = Camera (0,0,0) (0,0,-1) 0 (pi/4, pi/8) 40
 
 spheres :: [Object]
 spheres = [Object $ Sphere (x,y,z) 0.5 `uniform` Mat (28,133,150) 0 1 1

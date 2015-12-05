@@ -1,4 +1,5 @@
 module Camera ( Camera(..)
+              , fixedAspectRatio
               ) where
 
 import Geometry
@@ -10,9 +11,17 @@ import Geometry
 -- that. There are two angles defining the horizontal and
 -- vertical openings. The last variable is the distance between
 -- the center of projection and the screen.
-data Camera = Camera { centreScreenPosition :: Point
+data Camera = Camera { resolution :: (Int, Int)
+                     , centreScreenPosition :: Point
                      , orientation :: Vector
                      , flip :: Double
                      , openings :: (Double, Double)
                      , toScreenDistance :: Double
                      }
+
+fixedAspectRatio :: Double -> Camera -> Camera
+fixedAspectRatio d c@Camera { resolution = (w, h) } =
+  c { openings = (d, (ar * d)) }
+  where
+    -- I have no idea why this fraction is not the other way roud.
+    ar = fromIntegral w / fromIntegral h
