@@ -41,7 +41,7 @@ render (Camera (w, h) c o f (wo, ho) d) scene =
        )
      no@(nox, noy, noz) = normalise o
      cameraOrigin = c .- (d .* no)
-     x = normalise $ (rotateVect (0,0,1) dxo (1,0,0))
+     x = normalise $ (rotateVect (0,1,0) dxo (1,0,0))
      y = normalise $ (rotateVect x dyo (0,1,0))
      dxo = acos $ let n = no .- (0, noy, 0) in
        if n == nullVector
