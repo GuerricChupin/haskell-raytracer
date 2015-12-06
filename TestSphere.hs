@@ -20,12 +20,12 @@ main = render camera scene >>= putStr . show
 camera :: Camera
 camera =
   fixedAspectRatio (pi/4) $
-  Camera (floor $ 1366*0.5, floor $ 768*0.5) (-30,30,0) (1,-1,1) 0 (0,0) 10
+  Camera (floor $ 1366*0.5, floor $ 768*0.5) (-20,0,1) (20,0,1) 0 (0,0) 10
 
 spheres :: [Object]
-spheres =    [Object $ Sphere (0,0,15) 3 `uniform` Mat (255,0,0) 0.1 1.4 0.5]
-          ++ [Object $ Sphere (-5,0,20) 3 `uniform` Mat (0,255,0) 0.1 1.4 0.5]
-          ++ [Object $ Sphere (7,0,18) 3 `uniform` Mat (0,0,255) 0.1 1.4 0.5]
+spheres =    [Object $ Sphere (0,0,0) 3 `uniform` Mat (255,0,0) 0.1 1.4 0.5]
+          ++ [Object $ Sphere (-5,0,5) 3 `uniform` Mat (0,255,0) 0.1 1.4 0.5]
+          ++ [Object $ Sphere (7,0,3) 3 `uniform` Mat (0,0,255) 0.1 1.4 0.5]
           ++ [Object $ chessboardShaded (Plane (0,-3,0) (0,1,0)) (1,0,0) 3
                        (Mat (255,255,255) 0.5 1 1)
                        (Mat (0,0,0) 0.5 1 1)]

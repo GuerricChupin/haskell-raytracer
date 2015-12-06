@@ -20,11 +20,11 @@ main = sequence_ [i >>= writeFile ("film/film" ++ show j ++ ".ppm") . show |
         (i,j) <- zip (map (\c -> render c scene) camera) [0..]]
        -- render (1366 * 2, 768 * 2) (27.32, 15.36) 40 scene >>= putStr . show
 
-n = 100
+n = 99
 
 camera :: [Camera]
 camera = [fixedAspectRatio (pi/4) $
-          Camera (floor $ 1366*0.5, floor $ 768*0.5) (0,25*sin (i/n *pi),-25* cos (i/n*pi)) (0,-25*sin (i/n * pi),25*cos(i/n *pi)) 0 (0,0) 10| i <- [0..n]]
+          Camera (floor $ 1366*0.25, floor $ 768*0.25) (25*sin (i/n *pi),0,-25* cos (i/n*pi)) (-25*sin (i/n * pi),0,25*cos(i/n *pi)) 0 (0,0) 10| i <- [0..n]]
 
 spheres :: [Object]
 spheres =    [Object $ Sphere (0,0,0) 3 `uniform` Mat (255,0,0) 0.1 1.4 0.5]

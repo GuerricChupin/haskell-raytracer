@@ -47,13 +47,13 @@ render (Camera (w, h) c o f (wo, ho) d) scene =
                sgn = if (n `dotProd` (0,0,1)) > 0 then 1 else (-1) in
            sgn * (asin $
            if n == nullVector
-           then 1
+           then 0
            else norm $ normalise n `crossProd` (0,0,1))
      dyo = let n = no .- (nox, 0, 0)
                sgn = if (n `dotProd` (0,0,1)) > 0 then 1 else (-1) in
            sgn * (asin $
            if n == nullVector
-           then 1
+           then 0
            else norm $ normalise n `crossProd` (0,0,1))
 
 -- Only the closest intersection to the screen is considered.
