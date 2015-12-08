@@ -14,8 +14,6 @@ import Camera
 import Data.Maybe (isNothing, fromJust, isJust)
 import qualified Data.Array.Repa as A
 
-import Debug.Trace
-
 minExposure = 0.1
 maxReflection = 5
 maxRefraction = 5
@@ -41,10 +39,10 @@ render (Camera (w, h) c o f (wo, ho) d) scene =
        )
      no@(nox, noy, noz) = normalise o
      cameraOrigin = c .- (d .* no)
-     x = normalise $ (rotateVect (0,1,0) (dxo) (1,0,0))
+     x = normalise $ (rotateVect (0,1,0) dxo (1,0,0))
      y = normalise $ (rotateVect x (-dyo) (0,1,0))
-     dxo = let a = atan (nox/noz) in traceShow (180*a/pi) a
-     dyo = let a = atan (noy/noz) in traceShow (180*a/pi) a
+     dxo = atan (nox/noz)
+     dyo = atan (noy/noz)
 
 -- Only the closest intersection to the screen is considered.
 pointColor :: Scene -> Int -> Int -> Ray -> Color

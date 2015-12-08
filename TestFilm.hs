@@ -14,8 +14,6 @@ import BiconvexLens
 import Image
 import Camera
 
-import Debug.Trace
-
 main = sequence_ [i >>= writeFile ("film/film" ++ show j ++ ".ppm") . show |
         (i,j) <- zip (map (\c -> render c scene) camera) [0..]]
        -- render (1366 * 2, 768 * 2) (27.32, 15.36) 40 scene >>= putStr . show

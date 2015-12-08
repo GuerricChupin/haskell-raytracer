@@ -20,7 +20,7 @@ main = render camera scene >>= putStr . show
 camera :: Camera
 camera =
   fixedAspectRatio (pi/4) $
-  Camera (floor $ 1366*0.5, floor $ 768*0.5) (25*cos(0.2*pi),0,-25*sin(0.2*pi)) (-25*cos(0.2*pi),0,25*sin(0.2*pi)) 0 (0,0) 10
+  Camera (floor $ 1366*0.5, floor $ 768*0.5) (5,10,-10) (-0.5,-1,1) 0 (0,0) 10
 
 spheres :: [Object]
 spheres =    [Object $ Sphere (0,0,0) 3 `uniform` Mat (255,0,0) 0.1 1.4 0.5]
