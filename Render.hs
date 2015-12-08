@@ -31,7 +31,7 @@ render (Camera (w, h) c o f (wo, ho) d) scene =
      mkRays :: A.DIM2 -> Ray
      mkRays (A.Z A.:.i A.:.j) =
        (cameraOrigin
-       , d
+       , rotateVect no f $ d
        .* (((tan $ (-0.5 + fromIntegral j / fromIntegral w) * wo) .* x)
        .+  ((tan $ (0.5 - fromIntegral i / fromIntegral h) * ho) .* y))
        .+ (d .* no)
@@ -39,8 +39,8 @@ render (Camera (w, h) c o f (wo, ho) d) scene =
        )
      no@(nox, noy, noz) = normalise o
      cameraOrigin = c .- (d .* no)
-     x = normalise $ (rotateVect (0,1,0) dxo (1,0,0))
-     y = normalise $ (rotateVect x (-dyo) (0,1,0))
+     x = normalise $ rotateVect (0,1,0) dxo (1,0,0)
+     y = normalise $ rotateVect x (-dyo) (0,1,0)
      dxo = atan (nox/noz)
      dyo = atan (noy/noz)
 
