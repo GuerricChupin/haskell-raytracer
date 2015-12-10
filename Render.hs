@@ -10,6 +10,7 @@ import Renderable
 import LightSource
 import Material
 import Camera
+import AuxiliaryFunctions
 
 import Data.Maybe (isNothing, fromJust, isJust)
 import qualified Data.Array.Repa as A
@@ -39,10 +40,10 @@ render (Camera (w, h) c o f (wo, ho) d) scene =
        )
      no@(nox, noy, noz) = normalise o
      cameraOrigin = c .- (d .* no)
-     x = normalise $ rotateVect (0,1,0) dxo (1,0,0)
-     y = normalise $ rotateVect x (-dyo) (0,1,0)
-     dxo = atan (nox/noz)
-     dyo = atan (noy/noz)
+     x = normalise $ rotateVect (0,1,0) (dxo) (1,0,0)
+     y = no `crossProd` x
+     dxo | noz == 0 = (sgn nox) * pi/2
+         | otherwise = atan (nox/noz)
 
 -- Only the closest intersection to the screen is considered.
 pointColor :: Scene -> Int -> Int -> Ray -> Color
