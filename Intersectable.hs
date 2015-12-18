@@ -12,7 +12,7 @@ import Data.Maybe (isJust, fromJust)
 -- whether a ray enters or leave a solid at an intersection point.
 -- for non-closed objects (e.g. a plane), rays should always be Leaving.
 data Direction = Entering | Leaving
-   deriving (Eq)
+   deriving (Eq, Show)
 
 class Intersectable a where
    hit :: Ray -> a -> Bool
