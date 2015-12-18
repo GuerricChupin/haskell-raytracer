@@ -25,10 +25,11 @@ sphereIntersect ((a,b,c),(x,y,z),_)
   where
     normdir = normalise (x,y,z)
     p = normdir `dotProd` oc
-    cond = sqrt $ p^2 - (sqNorm oc) + r^2
+    cond = p^2 - (sqNorm oc) + r^2
+    scond = sqrt cond
     oc = (a,b,c) .- (d,e,f)
-    ppc = -p + cond
-    pmc = -p - cond
+    ppc = -p + scond
+    pmc = -p - scond
 
 instance Intersectable Sphere where
    hit r s = isJust $ firstIntersection r s
