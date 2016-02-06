@@ -34,8 +34,9 @@ instance Shader Chessboard where
       if f x == f y
       then mat1
       else mat2
-      where f x = floor (x / sqSize) `mod` 2
-            (x, y) = planeCoords o uZ uX p
+      where
+        f x = floor (x / sqSize) `mod` 2 :: Int
+        (x, y) = planeCoords o uZ uX p
 
 -- returns a point's coordinates in a plane's basis.
 -- undefined if the point is not on the plane.
@@ -57,4 +58,3 @@ chessboardShaded plane uX sqSize m1 m2 =
                             , mat1 = m1
                             , mat2 = m2
                             })
-

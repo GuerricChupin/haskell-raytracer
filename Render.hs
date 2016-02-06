@@ -85,13 +85,13 @@ pointColor scene acc acc' r
     refrRatio = n1 / n2
     rSin = refrRatio * iSin
     totRefl = rSin > 1
-    iCos = sqrt $ 1 - iSin^2
-    rCos = sqrt $ 1 - rSin^2
+    iCos = sqrt $ 1 - iSin^*^2
+    rCos = sqrt $ 1 - rSin^*^2
     reflCoef
       | totRefl = 1
-      | n1 <= n2 = ro + (1-ro) * (1-iCos)^5
-      | otherwise = ro + (1-ro) * (1-rCos)^5
-      where ro = ((n1 - n2)/(n1 + n2))^2
+      | n1 <= n2 = ro + (1-ro) * (1-iCos)^*^5
+      | otherwise = ro + (1-ro) * (1-rCos)^*^5
+      where ro = ((n1 - n2)/(n1 + n2))^*^2
     transCoef = 1 - reflCoef
     refrDir
       | n1 == n2 = dir r

@@ -10,6 +10,7 @@ import Data.List ( minimumBy
                  )
 import Data.Function (on)
 import Data.Maybe (isJust)
+import AuxiliaryFunctions ((^*^))
 
 data Sphere = Sphere { center  :: Point
                      , radius  :: Double
@@ -26,9 +27,8 @@ instance Intersectable Sphere where
       | otherwise = Just (p', p' .- c, Leaving)
       where !du   = normalise d
             !tc   = (c .- o) `dotProd` du
-            !dist = sqrt $ oc^2 - tc^2
+            !dist = sqrt $ oc^*^2 - tc^*^2
             !oc   = distance o c
             p    = o .+ ((tc - t1c) .* du)
             p'   = o .+ ((tc + t1c) .* du)
-            !t1c  = sqrt $ r^2 - dist^2
-
+            !t1c  = sqrt $ r^*^2 - dist^*^2
