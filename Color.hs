@@ -10,8 +10,6 @@ import AuxiliaryFunctions
 
 import Data.Word
 
-import Debug.Trace
-
 type Color = (Word8, Word8, Word8)
 
 toPPM :: Color -> String
