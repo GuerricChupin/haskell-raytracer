@@ -3,17 +3,25 @@ module Color ( Color
              , white
              , black
              , darken
+             , maxColor
              ) where
 
+import AuxiliaryFunctions
+
 import Data.Word
+
+import Debug.Trace
 
 type Color = (Word8, Word8, Word8)
 
 toPPM :: Color -> String
 toPPM (r, g, b) = show r ++ " " ++ show g ++ " " ++ show b
 
+maxColor :: Word8
+maxColor = 255
+
 white :: Color
-white = (255, 255, 255)
+white = (maxColor, maxColor, maxColor)
 
 black :: Color
 black = (0, 0, 0)
@@ -22,7 +30,12 @@ black = (0, 0, 0)
 -- (x <= 0), is _ -> black, darken 1 is 'id' and darken x where x > 1 is
 -- "lighten".
 darken :: Double -> Color -> Color
-darken x (r, g, b) | x < 0     = black
+darken x (r, g, b) | x <= 0     = black
                    | otherwise = (f r, f g, f b)
-   where f n = floor (x * fromIntegral n)
+   where
+     (xm, xn) = decodeFloat x
+     xm' = fromIntegral xm :: Int
+     f n = fromIntegral $ (xm'*(fromIntegral n)) `quot` fradix^*^(-xn)
 
+fradix :: Int
+fradix = fromInteger $ floatRadix 0

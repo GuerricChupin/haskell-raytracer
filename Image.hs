@@ -13,7 +13,7 @@ newtype Image = Image { toArray :: A.Array A.U A.DIM2 Color }
 instance Show Image where
    show img = "P3\n"
       ++ show (col shm) ++ " " ++ show (row shm)
-      ++ "\n255\n"
+      ++ "\n" ++ (show maxColor) ++ "\n"
       ++ concatMap ((++ "\n") . concat . intersperse " " . map toPPM) (toLists $ A.toList m)
       where m = toArray img
             shm = A.extent m

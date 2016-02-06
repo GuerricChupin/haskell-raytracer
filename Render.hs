@@ -38,7 +38,7 @@ render (Camera (w, h) c o f (wo, ho) d) scene =
        .+ (d .* no)
        , 1
        )
-     no@(nox, noy, noz) = normalise o
+     no@(nox, _, noz) = normalise o
      cameraOrigin = c .- (d .* no)
      x = normalise $ rotateVect (0,1,0) (dxo) (1,0,0)
      y = no `crossProd` x
