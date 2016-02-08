@@ -9,6 +9,7 @@ module Color ( Color
 import AuxiliaryFunctions
 
 import Data.Word
+import Data.Ratio
 
 type Color = (Word8, Word8, Word8)
 
@@ -17,6 +18,12 @@ toPPM (r, g, b) = show r ++ " " ++ show g ++ " " ++ show b
 
 maxColor :: Word8
 maxColor = 255
+
+maxColor16 :: Word16
+maxColor16 = fromIntegral maxColor
+
+maxColor' :: Double
+maxColor' = (fromIntegral maxColor)
 
 white :: Color
 white = (maxColor, maxColor, maxColor)
@@ -31,9 +38,8 @@ darken :: Double -> Color -> Color
 darken x (r, g, b) | x <= 0     = black
                    | otherwise = (f r, f g, f b)
    where
-     (xm, xn) = decodeFloat x
-     xm' = fromIntegral xm :: Int
-     f n = fromIntegral $ (xm'*(fromIntegral n)) `quot` fradix^*^(-xn)
+     xm = floor $ x * maxColor' :: Word16
+     f n = fromIntegral $ xm * (fromIntegral n) `quot` maxColor16
 
 fradix :: Int
 fradix = fromInteger $ floatRadix 0
