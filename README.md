@@ -1,6 +1,6 @@
 # Haskell ray tracer
 
-Simple ray tracer written in Haskell for fun with Guerric Chupin.
+Simple ray tracer written in Haskell for fun with Olivier Nicole.
 
 Scenes are described in Haskell and must be compiled and linked to the project.
 This way the powerful Haskell syntax (e.g. list comprehension) can be used.
